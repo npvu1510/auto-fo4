@@ -153,14 +153,14 @@ def buy(priceType='max', quantity=1):
 
 
 # ---------------------------------------------------------------- TRANSACTION FUNCTIONS ----------------------------------------------------------------
-def waitModal_v3(status='open', timeout = 20):
+def waitModal_v3(until='open', timeout = 20):
     threshold = 30
 
     startCountdown = time.time()
     while True:
         if time.time() - startCountdown >= timeout:
             return False
-        if status == 'open':
+        if until == 'open':
             if not compareImage(BUY_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW, BUY_MODAL_POS[0], BUY_MODAL_POS[1], BUY_MODAL_POS[2], BUY_MODAL_POS[3])), threshold=threshold, showDiff=False):
                 return 'buy'
             if not compareImage(SELL_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW,  SELL_MODAL_POS[0], SELL_MODAL_POS[1], SELL_MODAL_POS[2], SELL_MODAL_POS[3])), threshold=threshold, showDiff=False):
@@ -170,7 +170,7 @@ def waitModal_v3(status='open', timeout = 20):
             if not compareImage(SOLD_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW,  SOLD_MODAL_POS[0], SOLD_MODAL_POS[1], SOLD_MODAL_POS[2], SOLD_MODAL_POS[3])), threshold=threshold, showDiff=False) or not compareImage(SOLD_MULTI_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW,  SOLD_MULTI_MODAL_POS[0], SOLD_MULTI_MODAL_POS[1], SOLD_MULTI_MODAL_POS[2], SOLD_MULTI_MODAL_POS[3])), threshold=threshold, showDiff=False):
                 return 'sold'
             
-        elif status == 'close':
+        elif until == 'close':
             if not compareImage(CLOSE_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW, CLOSE_MODAL_POS[0], CLOSE_MODAL_POS[1], CLOSE_MODAL_POS[2], CLOSE_MODAL_POS[3])), threshold=threshold, showDiff=False):
                 return True  
     # time.sleep(0.25)
@@ -294,7 +294,6 @@ def isTransactionChanged(prevTransactions):
 
 def genTransactionData(numRow):
     newTransactions = []
-    changeArr = []
 
     i = 0
     while i < numRow:
@@ -304,7 +303,7 @@ def genTransactionData(numRow):
         
         # Click đăng ký lại và xác định loại modal
         single_click(TARGET_WINDOW, 1000, 212 + i * 42, hover=True)
-        modalType = waitModal_v3(status='open')
+        modalType = waitModal_v3(until='open')
 
         if not modalType:
             # saveImage(capture_window(TARGET_WINDOW), f'timeout_{time.time()}.png')
@@ -335,7 +334,7 @@ def genTransactionData(numRow):
 
         # CHỜ ĐÓNG MODAL
         # print('truoc khi close')
-        isClosed = waitModal_v3(status='close')
+        isClosed = waitModal_v3(until='close')
         # print('sau khi close')
         if not isClosed:
             saveImage(capture_window(TARGET_WINDOW), f'timeout_{time.time()}.png')
@@ -345,7 +344,7 @@ def genTransactionData(numRow):
             else:
                 if not newTransactions[i]['isReset']:
                     single_click(TARGET_WINDOW,  908, 617)
-            waitModal_v3(status='close')
+            waitModal_v3(until='close')
         time.sleep(0.25)
         i+=1
 
@@ -401,7 +400,7 @@ def runOnTransactions_v3(numRow=4, resetTime=None):
 
         # ĐĂNG KÝ LẠI, CHỜ MODAL MỞ VÀ XÁC ĐỊNH LOẠI MODAL
         single_click(TARGET_WINDOW, 1000, 212 + i * 42, hover=True)
-        modalType = waitModal_v3(status='open')
+        modalType = waitModal_v3(until='open')
         # print(modalType)
 
         if not modalType:
@@ -433,7 +432,7 @@ def runOnTransactions_v3(numRow=4, resetTime=None):
         
 
         # CHỜ ĐÓNG MODAL
-        isClosed = waitModal_v3(status='close')
+        isClosed = waitModal_v3(until='close')
         if not isClosed:
             saveImage(capture_window(TARGET_WINDOW), f'timeout_{time.time()}.png')
             if modalType == 'buy':
@@ -442,7 +441,7 @@ def runOnTransactions_v3(numRow=4, resetTime=None):
             else:
                 if not transactions[i]['isReset']:
                     single_click(TARGET_WINDOW,  908, 617)
-            waitModal_v3(status='close')
+            waitModal_v3(until='close')
 
         # print(transactions)
         # time.sleep(3)

@@ -2,7 +2,7 @@ import os
 import cv2
 
 # my modules
-from winAPi import *
+# from winAPi import *
 
 def imageToArr(image):
     return np.array(image)
