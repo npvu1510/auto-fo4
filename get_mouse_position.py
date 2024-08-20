@@ -3,9 +3,6 @@ import keyboard
 
 from python_imagesearch.imagesearch import *
 
-
-
-
 def get_mouse_relative_coordinates(window_title):
     prev_x = None
     prev_y = None

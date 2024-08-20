@@ -1,6 +1,6 @@
 import os
 import time
-import cv2
+# import cv2
 # import playsound
 
 # my modules
@@ -89,7 +89,7 @@ def updateCurrentPlayerBySwitchTab(row=0, prevPlayer=None):
     single_click(TARGET_WINDOW, 669, 149)
     time.sleep(0.1)
     single_click(TARGET_WINDOW, 530, 148)
-    time.sleep(1)
+    # time.sleep(1)
 
     return currentPlayer, False
 
@@ -110,7 +110,7 @@ def buyMaxOnFavorite(prevPrice):
     currentPrice = capture_window_region(TARGET_WINDOW, 962, 281, 77, 54)
 
     if prevPrice:
-        if compareImage(imageToArr(prevPrice), imageToArr(currentPrice), showDiff=False):
+        if compareImage(imageToArr(prevPrice), imageToArr(currentPrice), showDiff=False, threshold=100):
         # if True:
             res = isAvailableBuySlot()
             print(f'còn slot' if res else f'hết slot')
@@ -154,7 +154,7 @@ def buy(priceType='max', quantity=1):
 
 # ---------------------------------------------------------------- TRANSACTION FUNCTIONS ----------------------------------------------------------------
 def waitModal_v3(status='open', timeout = 20):
-    threshold = 25
+    threshold = 30
 
     startCountdown = time.time()
     while True:
@@ -205,17 +205,20 @@ def buyMaxOnTransaction_v3(prevPrice):
         # print(compareImage(imageToArr(prevPrice), imageToArr(currentPrice), threshold=100, showDiff=False))
         # time.sleep(5)
         
-        if compareImage(imageToArr(prevPrice), imageToArr(currentPrice), threshold=100, showDiff=False):
+        if compareImage(imageToArr(prevPrice), imageToArr(currentPrice), threshold=80, showDiff=False):
         # if True:
             
-            isAvailable = isAvailableBuySlot()
-            print(f'còn slot' if isAvailable else f'hết slot')
-            if isAvailable:
-                reBuy()
-                print('Cập nhật thành công !!')
-            else:
-                saveImage(capture_window(TARGET_WINDOW), f'failed_{time.time()}.png')
-                single_click(TARGET_WINDOW, 971, 587)
+            reBuy()
+            print('Cập nhật thành công !!')
+
+            # isAvailable = isAvailableBuySlot()
+            # print(f'còn slot' if isAvailable else f'hết slot')
+            # if isAvailable:
+            #     reBuy()
+            #     print('Cập nhật thành công !!')
+            # else:
+            #     saveImage(capture_window(TARGET_WINDOW), f'failed_{time.time()}.png')
+            #     single_click(TARGET_WINDOW, 971, 587)
             
             # resetFlag = True
 
@@ -331,7 +334,9 @@ def genTransactionData(numRow):
         
 
         # CHỜ ĐÓNG MODAL
+        # print('truoc khi close')
         isClosed = waitModal_v3(status='close')
+        # print('sau khi close')
         if not isClosed:
             saveImage(capture_window(TARGET_WINDOW), f'timeout_{time.time()}.png')
             if modalType == 'buy':
@@ -356,11 +361,11 @@ def runOnTransactions_v3(numRow=4, resetTime=None):
     start = time.time()
     i = 0
     while True:
-        time.sleep(0.25)
-        if time.time() - start > 300:
-            time.sleep(15)
-            start = time.time()
-            continue
+        # time.sleep(0.25)
+        # if time.time() - start > 300:
+        #     time.sleep(15)
+        #     start = time.time()
+        #     continue
 
         # GIỚI HẠN SỐ LƯỢNG GIAO DỊCH
         if i == numRow:
@@ -382,12 +387,13 @@ def runOnTransactions_v3(numRow=4, resetTime=None):
             transactions = genTransactionData(numRow)
 
             os.system('cls')
+        # print('a')
 
         # CHỈ CHO PHÉP MUA HOẶC BÁN
         if not transactions[i]:
             i+=1
             continue
-
+        # print('b')
         # KIỂM TRA TỚI GIỜ RESET CHƯA ?
         
 
@@ -444,10 +450,86 @@ def runOnTransactions_v3(numRow=4, resetTime=None):
         i+=1
 
 
+def runOnFavourite(numRow=1):
+    prevPrice = None
+    currentPrice = None
+
+    currentRow = 0
+    while True:
+        if currentRow == numRow:
+            currentRow = 0
+        
+        # # Chuyển dòng
+        # single_click(TARGET_WINDOW,466, 250 + currentRow * 41,draw=f'position_{currentRow}.png')
+        # time.sleep(0.05)
+
+        # Chuyển tab cập nhật
+        single_click(TARGET_WINDOW,835, 179)
+        time.sleep(0.05)
+        single_click(TARGET_WINDOW,669, 178)
+        time.sleep(0.2)
+
+        # Làm gì đó.......
+        # Kiểm tra giá trị cầu thủ đã thay đổi chưa?
+
+        if prevPrice:
+            currentPrice = capture_window_region(TARGET_WINDOW, 897, 379, 101, 31)
+
+            start = time.time()
+            while not compareImage(imageToArr(currentPrice), PRICE_UPDATING_IMAGE, threshold=30, showDiff=False) and time.time() - start <= 5:
+                currentPrice = capture_window_region(TARGET_WINDOW, 897, 379, 101, 31)
+                # print("🔃 Đang cập nhật giá...")
+            
+            res = compareImage(imageToArr(prevPrice), imageToArr(currentPrice), threshold=30, showDiff=False)
+
+            print('Thay đổi' if res else 'Không thay đổi')
+            # if res:
+            #     return
+            time.sleep(1)
+            
+            # single_click(TARGET_WINDOW, 1100, 828)
+
+            # expandArrow = capture_window_region(TARGET_WINDOW, 536, 205, 26, 15)
+            # timeout = False
+            # start = time.time()
+            # while not compareImage(imageToArr(expandArrow), BUY_MODAL_BIGGER_IMAGE, threshold=80, showDiff=False):
+            #     if time.time() - start > 20:
+            #         timeout = True
+            #         break
+            #     expandArrow = capture_window_region(TARGET_WINDOW, 536, 205, 26, 15)
+            #     print("Chờ modal mở...")
+            # if timeout:
+            #     continue
+            # single_click(TARGET_WINDOW, 1253, 393)
+            # time.sleep(0.05)
+            # single_click(TARGET_WINDOW, 1033, 722)
+
+
+            # expandArrow = capture_window_region(TARGET_WINDOW, 536, 205, 26, 15)
+            # start = time.time()
+            # while compareImage(imageToArr(expandArrow), BUY_MODAL_BIGGER_IMAGE, threshold=80, showDiff=False):
+            #     if time.time() - start > 10:
+            #         single_click(TARGET_WINDOW, 1214, 725)
+            #         break
+
+            #     expandArrow = capture_window_region(TARGET_WINDOW, 536, 205, 26, 15)
+            #     print("Chờ modal đóng...")
+        
+        else:
+            currentPrice = capture_window_region(TARGET_WINDOW, 897, 379, 101, 31)
+
+
+        prevPrice = currentPrice
+
+
 def main():
     # resetTime = [toResetTime("Chẵn 05 - Chẵn 25"), toResetTime("Chẵn 41 - Lẻ 01"), toResetTime("Chẵn 11 - Chẵn 31"), toResetTime("Chẵn 18 - Chẵn 38"), toResetTime("Chẵn 06 - Chẵn 26")]
     # runOnTransactions_v2(buyMaxOnTransaction, 'buy', len(resetTime), resetTime)
-    runOnTransactions_v3(numRow=2)
+    runOnTransactions_v3(numRow=3)
+    # runOnFavourite(1)
+    # captureTemplate([536, 205, 26, 15], 'buy_modal_bigger.png')
+
+
 
     # NEW TEMPLATE
     # captureTemplate([896, 312, 142, 20], 'max_price.png')
@@ -455,6 +537,10 @@ def main():
     
     # TEST
     # testImage([962, 315, 77, 54], BUY_MODAL_IMAGE)
+
+
+    # for i in range(0,5):
+    #     single_click(TARGET_WINDOW,466, 250 + i * 41, draw=f'draw_{i}.png')
 
     
     pass

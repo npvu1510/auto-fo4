@@ -3,6 +3,7 @@ import cv2
 # ---------------------------------------------------------------- TEMPLATES ----------------------------------------------------------------
 # MODAL
 BUY_MODAL_IMAGE = cv2.imread('./templates/buy_modal.png') 
+BUY_MODAL_BIGGER_IMAGE = cv2.imread('./templates/buy_modal_bigger.png') 
 SELL_MODAL_IMAGE = cv2.imread('./templates/sell_modal.png') 
 BOUGHT_MODAL_IMAGE = cv2.imread('./templates/bought_modal.png')
 SOLD_MODAL_IMAGE = cv2.imread('./templates/sold_modal.png')
@@ -13,6 +14,10 @@ CLOSE_MODAL_IMAGE = cv2.imread('./templates/close_modal.png')
 
 # TRANSACTIONS
 HYPHEN_IMAGE = cv2.imread('./templates/hyphen.png') 
+
+# FAVORITES
+PRICE_UPDATING_IMAGE = cv2.imread('./templates/price_updating.png') 
+
 
 
 
