@@ -41,11 +41,33 @@ def compareImage(img1, img2, threshold = 50, showDiff = False):
     
     return isDifferent
 
+from skimage.metrics import structural_similarity as compare_ssim
+def compareImage_v2(img1, img2, threshold=0.95, showDiff=False, showScore = False):
+    # Chuyển ảnh sang grayscale
+    img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+    img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+
+    # So sánh hai hình ảnh với SSIM
+    score, diff = compare_ssim(img1, img2, full=True)
+    diff = (diff * 255).astype("uint8")
+
+    # Kiểm tra xem score có nhỏ hơn ngưỡng không
+    # print(score)
+    if showScore:
+        print(score)
+    isDifferent = score < threshold
+
+    if showDiff:
+        cv2.imshow("difference", diff)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+    return isDifferent
 
 # ---------------------------------------------------------------- TEST FUNCTIONS ----------------------------------------------------------------
-def captureTemplate(position, templateName):
+def captureTemplate(position, templateName, subFolder="1600x1900"):
     template = capture_window_region(TARGET_WINDOW, position[0], position[1], position[2], position[3])
-    saveImage(template, f"./templates/{templateName}")
+    saveImage(template, f"./templates/{subFolder}/{templateName}")
 
 
 def testImage(position, template = None):

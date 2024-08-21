@@ -16,49 +16,17 @@ def adjust_minute(minute, offset, is_start):
         return new_minute, new_minute < minute
 
 
-
-# def isResetTime(startHourType, startMinute, endHourType, endMinute, offset = 0):
-#     startMinute, isStartChanged = adjust_minute(startMinute, offset, True)
-#     endMinute, isEndChanged = adjust_minute(endMinute, offset, False)
-
-#     if isStartChanged:
-#         startHourType = 'chẵn' if startHourType == 'lẻ' else 'lẻ'
-#     if isEndChanged:
-#         endHourType = 'chẵn' if endHourType == 'lẻ' else 'lẻ'
+from copy import deepcopy
+def isResetTime_v2(resetTime, offset=20):
+    rst = deepcopy(resetTime)
     
-#     # print(f'New resetTime (+-{offset}): {startHourType}-{startMinute} {endHourType}-{endMinute}')
-
-#     # Lấy thời gian hiện tại
-#     currentTime = datetime.datetime.now()
-#     current_hour = currentTime.hour
-#     current_minute = currentTime.minute
-
-#     # Kiểm tra khoảng thời gian
-#     # Trường hợp thông thường: startMinute nhỏ hơn hoặc bằng endMinute
-#     if startMinute <= endMinute:
-#         if getTypeHour(current_hour) == startHourType:
-#             return startMinute <= current_minute <= endMinute 
-
-#     # Trường hợp đặc biệt: startMinute lớn hơn endMinute (qua nửa đêm)
-#     else:
-#         if getTypeHour(current_hour) == startHourType:
-#             return current_minute >= startMinute
-#         if getTypeHour(current_hour) == endHourType:
-#             return current_minute <= endMinute
-            
-#     return False
-
-
-def isResetTime_v2(startHourType, startMinute, endHourType, endMinute, offset = 10):
-    startMinute, isStartChanged = adjust_minute(startMinute, offset, True)
-    endMinute, isEndChanged = adjust_minute(endMinute, offset, False)
+    rst['startMinute'], isStartChanged = adjust_minute(rst['startMinute'], offset, True)
+    rst['endMinute'], isEndChanged = adjust_minute(rst['endMinute'], offset, False)
 
     if isStartChanged:
-        startHourType = 'chẵn' if startHourType == 'lẻ' else 'lẻ'
+        rst['startHourType'] = 'chẵn' if rst['startHourType'] == 'lẻ' else 'lẻ'
     if isEndChanged:
-        endHourType = 'chẵn' if endHourType == 'lẻ' else 'lẻ'
-    
-    # print(f'New resetTime (+-{offset}): {startHourType}-{startMinute} {endHourType}-{endMinute}')
+        rst['endHourType'] = 'chẵn' if rst['endHourType'] == 'lẻ' else 'lẻ'
 
     # Lấy thời gian hiện tại
     currentTime = datetime.datetime.now()
@@ -70,48 +38,80 @@ def isResetTime_v2(startHourType, startMinute, endHourType, endMinute, offset = 
 
     # Kiểm tra khoảng thời gian
     message = ''
-    # Trường hợp thông thường: startMinute nhỏ hơn hoặc bằng endMinute
-    # if startMinute <= endMinute:
-    if startHourType == endHourType:
-        if getTypeHour(current_hour) == startHourType:
+    # Trường hợp thông thường: rst['startMinute'] nhỏ hơn hoặc bằng rst['endMinute']
+    # if rst['startMinute'] <= rst['endMinute']:
+    if rst['startHourType'] == rst['endHourType']:
+        if getTypeHour(current_hour) == rst['startHourType']:
             # Chưa tới giờ
-            if current_minute < startMinute:
-                message = message + f"{current_hour}:{startMinute}"
+            if current_minute < rst['startMinute']:
+                message = message + f"{current_hour}:{rst['startMinute']}"
 
             # Đã qua giờ
-            elif current_minute > endMinute:
-                message = message + f"{(current_hour + 2) % 24}:{startMinute}"
+            elif current_minute > rst['endMinute']:
+                message = message + f"{(current_hour + 2) % 24}:{rst['startMinute']}"
 
             # Đang trong giờ
             else:
                 return True
         else:
-            message = message + f"{(current_hour + 1) % 24}:{startMinute}"
+            message = message + f"{(current_hour + 1) % 24}:{rst['startMinute']}"
 
-
-    # Trường hợp đặc biệt: startMinute lớn hơn endMinute (qua nửa đêm)
+    # Trường hợp đặc biệt: rst['startMinute'] lớn hơn rst['endMinute'] (qua nửa đêm)
     else:
-        if getTypeHour(current_hour) == startHourType:
-            if current_minute < startMinute:
-                message = message + f"{current_hour}:{startMinute}"
+        if getTypeHour(current_hour) == rst['startHourType']:
+            if current_minute < rst['startMinute']:
+                message = message + f"{current_hour}:{rst['startMinute']}"
             else:
                 return True
-        
-        if getTypeHour(current_hour) == endHourType:
-            if current_minute > endMinute:
-                message = message + f"{(current_hour + 1) % 24}:{startMinute}"
+
+        if getTypeHour(current_hour) == rst['endHourType']:
+            if current_minute > rst['endMinute']:
+                message = message + f"{(current_hour + 1) % 24}:{rst['startMinute']}"
             else:
                 return True
-    
+
     return message
+
+
+
+def time_until_reset(rst, offset=20):
+    result = isResetTime_v2(rst, offset)
+
+    if result is True:
+        # return "Thời gian hiện tại đang nằm trong khoảng reset time."
+        return True
+
+    # result có định dạng "hh:mm"
+    target_hour, target_minute = map(int, result.split(':'))
+
+    # Lấy thời gian hiện tại
+    currentTime = datetime.datetime.now()
+    current_hour = currentTime.hour
+    current_minute = currentTime.minute
+
+    # Chuyển đổi thời gian hiện tại và thời gian đích thành số phút kể từ đầu ngày
+    current_time_in_minutes = current_hour * 60 + current_minute
+    target_time_in_minutes = target_hour * 60 + target_minute
+
+    # Tính số phút còn lại
+    if target_time_in_minutes >= current_time_in_minutes:
+        minutes_until_reset = target_time_in_minutes - current_time_in_minutes
+    else:
+        # Nếu target time là ngày hôm sau
+        minutes_until_reset = (24 * 60 - current_time_in_minutes) + target_time_in_minutes
+
+    return f"Còn lại {minutes_until_reset} phút trước khi tới giờ reset."
+
+
+
 
 def toResetTime(resetStr):
     split_parts = resetStr.split(' ')
     if len(split_parts) == 2:
         startMinute = int(split_parts[-1].split('-')[0])
         endMinute = int(split_parts[-1].split('-')[1])
-        return {'startHourType': split_parts[0].lower(), 'starMinute':  startMinute, 'endHourType': split_parts[0].lower(),  'endMinute': endMinute}
+        return {'startHourType': split_parts[0].lower(), 'startMinute':  startMinute, 'endHourType': split_parts[0].lower(),  'endMinute': endMinute}
     else:        
-        return {'startHourType': split_parts[0].lower(), 'starMinute':  int(split_parts[1]), 'endHourType': split_parts[3].lower(),  'endMinute': int(split_parts[-1])}
+        return {'startHourType': split_parts[0].lower(), 'startMinute':  int(split_parts[1]), 'endHourType': split_parts[3].lower(),  'endMinute': int(split_parts[-1])}
 
 

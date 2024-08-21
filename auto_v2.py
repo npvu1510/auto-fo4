@@ -6,7 +6,7 @@ import time
 # my modules
 from constants import *
 from utils import *
-from timeCheck import  isResetTime_v2, toResetTime
+from timeCheck import  isResetTime_v2, toResetTime, time_until_reset
 
 
 # ---------------------------------------------------------------- OTHERS ----------------------------------------------------------------
@@ -153,14 +153,14 @@ def buy(priceType='max', quantity=1):
 
 
 # ---------------------------------------------------------------- TRANSACTION FUNCTIONS ----------------------------------------------------------------
-def waitModal_v3(status='open', timeout = 15):
-    threshold = 50
+def waitModal_v3(until='open', timeout = 15):
+    threshold = 120
 
     startCountdown = time.time()
     while True:
         if time.time() - startCountdown >= timeout:
             return False
-        if status == 'open':
+        if until == 'open':
             if not compareImage(BUY_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW, BUY_MODAL_POS[0], BUY_MODAL_POS[1], BUY_MODAL_POS[2], BUY_MODAL_POS[3])), threshold=threshold, showDiff=False):
                 return 'buy'
             if not compareImage(SELL_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW,  SELL_MODAL_POS[0], SELL_MODAL_POS[1], SELL_MODAL_POS[2], SELL_MODAL_POS[3])), threshold=threshold, showDiff=False):
@@ -170,7 +170,7 @@ def waitModal_v3(status='open', timeout = 15):
             if not compareImage(SOLD_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW,  SOLD_MODAL_POS[0], SOLD_MODAL_POS[1], SOLD_MODAL_POS[2], SOLD_MODAL_POS[3])), threshold=threshold, showDiff=False) or not compareImage(SOLD_MULTI_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW,  SOLD_MULTI_MODAL_POS[0], SOLD_MULTI_MODAL_POS[1], SOLD_MULTI_MODAL_POS[2], SOLD_MULTI_MODAL_POS[3])), threshold=threshold, showDiff=False):
                 return 'sold'
             
-        elif status == 'close':
+        elif until == 'close':
             if not compareImage(CLOSE_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW, CLOSE_MODAL_POS[0], CLOSE_MODAL_POS[1], CLOSE_MODAL_POS[2], CLOSE_MODAL_POS[3])), threshold=threshold, showDiff=False):
                 return True  
     # time.sleep(0.25)
@@ -304,7 +304,7 @@ def genTransactionData(numRow):
         
         # Click đăng ký lại và xác định loại modal
         single_click(TARGET_WINDOW, 1000, 212 + i * 42, hover=True)
-        modalType = waitModal_v3(status='open')
+        modalType = waitModal_v3(until='open')
 
         if not modalType:
             # saveImage(capture_window(TARGET_WINDOW), f'timeout_{time.time()}.png')
@@ -335,7 +335,7 @@ def genTransactionData(numRow):
 
         # CHỜ ĐÓNG MODAL
         # print('truoc khi close')
-        isClosed = waitModal_v3(status='close')
+        isClosed = waitModal_v3(until='close')
         # print('sau khi close')
         if not isClosed:
             saveImage(capture_window(TARGET_WINDOW), f'timeout_{time.time()}.png')
@@ -345,7 +345,7 @@ def genTransactionData(numRow):
             else:
                 if not newTransactions[i]['isReset']:
                     single_click(TARGET_WINDOW,  908, 617)
-            waitModal_v3(status='close')
+            waitModal_v3(until='close')
         # time.sleep(0.25)
         # time.sleep(0.05)
         i+=1
@@ -402,7 +402,7 @@ def runOnTransactions_v3(numRow=4, resetTime=None):
 
         # ĐĂNG KÝ LẠI, CHỜ MODAL MỞ VÀ XÁC ĐỊNH LOẠI MODAL
         single_click(TARGET_WINDOW, 1000, 212 + i * 42, hover=True)
-        modalType = waitModal_v3(status='open')
+        modalType = waitModal_v3(until='open')
         # print(modalType)
 
         if not modalType:
@@ -434,7 +434,7 @@ def runOnTransactions_v3(numRow=4, resetTime=None):
         
 
         # CHỜ ĐÓNG MODAL
-        isClosed = waitModal_v3(status='close')
+        isClosed = waitModal_v3(until='close')
         if not isClosed:
             saveImage(capture_window(TARGET_WINDOW), f'timeout_{time.time()}.png')
             if modalType == 'buy':
@@ -443,7 +443,7 @@ def runOnTransactions_v3(numRow=4, resetTime=None):
             else:
                 # if not transactions[i]['isReset']:
                 single_click(TARGET_WINDOW,  908, 617)
-            waitModal_v3(status='close')
+            waitModal_v3(until='close')
 
         # print(transactions)
         # time.sleep(3)
@@ -523,18 +523,170 @@ def runOnFavourite(numRow=1):
         prevPrice = currentPrice
 
 
+def waitModal_v4(until='open', timeout=15):
+    threshold = 50
+
+    start = time.time()
+    while time.time() - start >= timeout:        
+        if until == 'open':
+            if not compareImage(BUY_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW, BUY_MODAL_POS[0], BUY_MODAL_POS[1], BUY_MODAL_POS[2], BUY_MODAL_POS[3])), threshold=threshold, showDiff=False):
+                return 'buy'
+            if not compareImage(SELL_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW,  SELL_MODAL_POS[0], SELL_MODAL_POS[1], SELL_MODAL_POS[2], SELL_MODAL_POS[3])), threshold=threshold, showDiff=False):
+                return 'sell'
+            
+        elif until == 'close':
+            if not compareImage(CLOSE_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW, CLOSE_MODAL_POS[0], CLOSE_MODAL_POS[1], CLOSE_MODAL_POS[2], CLOSE_MODAL_POS[3])), threshold=threshold, showDiff=False):
+                return True  
+            
+def timing_capture(pos):
+    start = time.time()
+    index = 0
+    while time.time() - start <= 5:
+        image = capture_window_region(TARGET_WINDOW, pos[0], pos[1], pos[2], pos[3])
+        saveImage(image, f'timing_captures/{index}.png')
+        index +=1
+
+def waitModal_v4(template, pos):
+    currentImg = capture_window_region(TARGET_WINDOW, pos[0], pos[1], pos[2], pos[3])
+    
+    start = time.time()
+    while compareImage_v2(template, imageToArr(currentImg), threshold=0.85):
+        if time.time() - start >= 2:
+            return False
+            
+        currentImg = capture_window_region(TARGET_WINDOW, pos[0], pos[1], pos[2], pos[3])
+        # print("Đang chờ modal mở...")
+    # signatureImg = capture_window_region(TARGET_WINDOW, pos[0], pos[1], pos[2], pos[3])
+    
+    maxPriceImage = capture_window_region(TARGET_WINDOW, 1200, 382, 100, 24)
+    # resultImg = capture_window(TARGET_WINDOW)
+    # saveImage(signatureImg, 'templates/1600x1900/signatureImg.png')
+    # saveImage(maxPriceImage, 'templates/1600x1900/maxPriceImage.png')
+    return maxPriceImage
+    
+
+
+# 1265, 538, 40, 40
+# buyModalImage_1600x900 = cv2.imread('./templates/1600x1900/buy_modal.png') 
+# buyModalImage_1600x900 = cv2.imread('./templates/1600x1900/163.png') 
+buyModalImage_1600x900 = cv2.imread('./templates/1600x1900/170.png') 
+
+def runOnTransactions_v4(resetTimes=[]):
+    numRow = len(resetTimes)
+
+    prevPrice = [None] * numRow
+    currentPrice = None
+
+    updated = [False] * numRow
+
+    row = 0
+    while True:
+        time.sleep(0.25)
+
+        os.system('cls')
+        print(f"👉 Dòng {row + 1}")
+
+        # KIỂM TRA CÓ ĐANG TRONG GIỜ RESET KHÔNG ?
+        message = time_until_reset(resetTimes[row], offset=20)
+        # print(message, isinstance(message, str))
+        if isinstance(message, str):
+            print(message)
+
+            updated[row] = False
+            row = row + 1 if row < numRow - 1 else 0
+            continue
+
+        # KIỂM TRA ĐÃ CẬP NHẬT GIÁ Ở ĐỢT RESET NÀY CHƯA ?
+        if updated[row]:
+            row = row + 1 if row < numRow - 1 else 0
+            continue
+
+
+        # Click vào row
+        # single_click(TARGET_WINDOW, 1249, 258 + row * 52, draw=f'row_{row}.png')
+        multi_click(1249, 258 + row * 52, 2, rand_x=True, rand_y=False)
+
+        # Chờ Modal mở
+        currentPrice = waitModal_v4(buyModalImage_1600x900, [1270, 536, 35, 44])
+        if not currentPrice:
+            single_click(TARGET_WINDOW, 1214, 724)
+            continue
+
+        # timing_capture([1270, 536, 35, 44])
+
+        # testRow = row + 1 if row + 1 < numRow else 0
+        testRow = row
+        if prevPrice[testRow]:
+            isDiff = compareImage_v2(imageToArr(prevPrice[testRow]), imageToArr(currentPrice), threshold=0.75, showScore=True)
+            # isDiff = compareImage(imageToArr(prevPrice[testRow]), imageToArr(currentPrice), threshold=80)
+            # print(f'{row+1}: Thay đổi' if isDiff else f'{row+1}: Không thay đổi')
+
+            # Giá đã thay đổi
+            if isDiff:
+                
+                single_click(TARGET_WINDOW, 1284, 395)
+                time.sleep(0.05)
+                single_click(TARGET_WINDOW, 1034, 725)
+                time.sleep(0.05)
+                send_key(TARGET_WINDOW, KEY_CODES['ESC'])
+                updated[testRow] = True
+
+                # saveImage(prevPrice[testRow], 'DIFF_prevPrice.png')
+                # saveImage(currentPrice, 'DIFF_currentPrice.png')
+                # return 
+                pass
+        
+        prevPrice[row] = currentPrice
+        
+
+        # Tắt modal
+        single_click(TARGET_WINDOW, 1214, 724)
+
+        # return 
+        # waitModal_v3(until='close')
+
+           
+        row = row + 1 if row < numRow - 1 else 0
+
+    pass
+
+
+RESET_TIME = {
+    "Scamacca": toResetTime("Chẵn 18 - Chẵn 38"),
+    "Correa": toResetTime("Chẵn 15 - Chẵn 35"),
+    "Unal": toResetTime("Chẵn 01 - Chẵn 21"),
+    "Anguissa": toResetTime("Chẵn 20 - Chẵn 40"),
+    "Awoniyi": toResetTime("Chẵn 06 - Chẵn 26")
+}
+
 def main():
-    # resetTime = [toResetTime("Chẵn 05 - Chẵn 25"), toResetTime("Chẵn 41 - Lẻ 01"), toResetTime("Chẵn 11 - Chẵn 31"), toResetTime("Chẵn 18 - Chẵn 38"), toResetTime("Chẵn 06 - Chẵn 26")]
+    resetTimes = [RESET_TIME['Scamacca'], RESET_TIME['Correa'], RESET_TIME['Unal']]
+
+    
+
+    # for  rst in resetTime:
+    #     print(time_until_reset(rst, offset=20))
+
     # runOnTransactions_v2(buyMaxOnTransaction, 'buy', len(resetTime), resetTime)
     # runOnTransactions_v3(numRow=3)
     # runOnFavourite(1)
     # captureTemplate([536, 205, 26, 15], 'buy_modal_bigger.png')
 
 
+    runOnTransactions_v4(resetTimes)
+
+    # img1 = cv2.imread('./DIFF_prevPrice.png') 
+    # # img2 = cv2.imread('./prevPrice.png') 
+    # img2 = cv2.imread('./DIFF_currentPrice.png') 
+
+    # res = compareImage_v2(img1, img2, threshold=0.9, showDiff=False)
+    # print(res)
+
+
 
     # NEW TEMPLATE
-    # captureTemplate([896, 312, 142, 20], 'max_price.png')
-    captureTemplate([647, 344, 73, 16], 'spam_error.png')
+    # captureTemplate([1059, 314, 33, 20], 'buy_modal_backup.png')
+    # captureTemplate([647, 344, 73, 16], 'spam_error.png')
     
     # TEST
     # testImage([962, 315, 77, 54], BUY_MODAL_IMAGE)
