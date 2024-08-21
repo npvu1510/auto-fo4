@@ -61,5 +61,8 @@ RESET_TIME = {
     "Correa": toResetTime("Chẵn 15 - Chẵn 35"),
     "Unal": toResetTime("Chẵn 01 - Chẵn 21"),
     "Anguissa": toResetTime("Chẵn 20 - Chẵn 40"),
-    "Awoniyi": toResetTime("Chẵn 06 - Chẵn 26")
+    "Awoniyi": toResetTime("Chẵn 06 - Chẵn 26"),
+    "Rowe": toResetTime("Chẵn 30 - Chẵn 50"),
+    "Guedes": toResetTime("Chẵn 15 - Chẵn 35"),
+    "Milik": toResetTime("Lẻ 59 - Chẵn 19")
 }

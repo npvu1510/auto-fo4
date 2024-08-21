@@ -247,7 +247,8 @@ def runOnTransactions_v4(resetTimes=[]):
 
 a = 1.25
 def main():
-    resetTimes = [RESET_TIME['Scamacca'], RESET_TIME['Correa'], RESET_TIME['Unal']]
+    # resetTimes = [RESET_TIME['Scamacca'], RESET_TIME['Correa'], RESET_TIME['Unal']]
+    resetTimes = [RESET_TIME['Rowe'], RESET_TIME['Guedes'], RESET_TIME['Milik']]
 
     runOnTransactions_v4(resetTimes)
 
