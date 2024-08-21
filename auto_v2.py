@@ -153,14 +153,14 @@ def buy(priceType='max', quantity=1):
 
 
 # ---------------------------------------------------------------- TRANSACTION FUNCTIONS ----------------------------------------------------------------
-def waitModal_v3(until='open', timeout = 20):
-    threshold = 30
+def waitModal_v3(status='open', timeout = 15):
+    threshold = 50
 
     startCountdown = time.time()
     while True:
         if time.time() - startCountdown >= timeout:
             return False
-        if until == 'open':
+        if status == 'open':
             if not compareImage(BUY_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW, BUY_MODAL_POS[0], BUY_MODAL_POS[1], BUY_MODAL_POS[2], BUY_MODAL_POS[3])), threshold=threshold, showDiff=False):
                 return 'buy'
             if not compareImage(SELL_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW,  SELL_MODAL_POS[0], SELL_MODAL_POS[1], SELL_MODAL_POS[2], SELL_MODAL_POS[3])), threshold=threshold, showDiff=False):
@@ -170,7 +170,7 @@ def waitModal_v3(until='open', timeout = 20):
             if not compareImage(SOLD_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW,  SOLD_MODAL_POS[0], SOLD_MODAL_POS[1], SOLD_MODAL_POS[2], SOLD_MODAL_POS[3])), threshold=threshold, showDiff=False) or not compareImage(SOLD_MULTI_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW,  SOLD_MULTI_MODAL_POS[0], SOLD_MULTI_MODAL_POS[1], SOLD_MULTI_MODAL_POS[2], SOLD_MULTI_MODAL_POS[3])), threshold=threshold, showDiff=False):
                 return 'sold'
             
-        elif until == 'close':
+        elif status == 'close':
             if not compareImage(CLOSE_MODAL_IMAGE, imageToArr(capture_window_region(TARGET_WINDOW, CLOSE_MODAL_POS[0], CLOSE_MODAL_POS[1], CLOSE_MODAL_POS[2], CLOSE_MODAL_POS[3])), threshold=threshold, showDiff=False):
                 return True  
     # time.sleep(0.25)
@@ -294,6 +294,7 @@ def isTransactionChanged(prevTransactions):
 
 def genTransactionData(numRow):
     newTransactions = []
+    changeArr = []
 
     i = 0
     while i < numRow:
@@ -303,7 +304,7 @@ def genTransactionData(numRow):
         
         # Click đăng ký lại và xác định loại modal
         single_click(TARGET_WINDOW, 1000, 212 + i * 42, hover=True)
-        modalType = waitModal_v3(until='open')
+        modalType = waitModal_v3(status='open')
 
         if not modalType:
             # saveImage(capture_window(TARGET_WINDOW), f'timeout_{time.time()}.png')
@@ -334,7 +335,7 @@ def genTransactionData(numRow):
 
         # CHỜ ĐÓNG MODAL
         # print('truoc khi close')
-        isClosed = waitModal_v3(until='close')
+        isClosed = waitModal_v3(status='close')
         # print('sau khi close')
         if not isClosed:
             saveImage(capture_window(TARGET_WINDOW), f'timeout_{time.time()}.png')
@@ -344,8 +345,9 @@ def genTransactionData(numRow):
             else:
                 if not newTransactions[i]['isReset']:
                     single_click(TARGET_WINDOW,  908, 617)
-            waitModal_v3(until='close')
-        time.sleep(0.25)
+            waitModal_v3(status='close')
+        # time.sleep(0.25)
+        # time.sleep(0.05)
         i+=1
 
     # print('TRACKING')
@@ -400,7 +402,7 @@ def runOnTransactions_v3(numRow=4, resetTime=None):
 
         # ĐĂNG KÝ LẠI, CHỜ MODAL MỞ VÀ XÁC ĐỊNH LOẠI MODAL
         single_click(TARGET_WINDOW, 1000, 212 + i * 42, hover=True)
-        modalType = waitModal_v3(until='open')
+        modalType = waitModal_v3(status='open')
         # print(modalType)
 
         if not modalType:
@@ -413,14 +415,14 @@ def runOnTransactions_v3(numRow=4, resetTime=None):
             print(f"💵 Mua cầu thủ #{i+1}")
             transactions[i]['prevPrice'], transactions[i]['isReset'] = buyMaxOnTransaction_v3(transactions[i]['prevPrice'])
 
-            if not transactions[i]['isReset']:
-                single_click(TARGET_WINDOW, 971, 587)
+            # if not transactions[i]['isReset']:
+            #     single_click(TARGET_WINDOW, 971, 587)
         else:
             print(f"🤑 Bán cầu thủ #{i+1}")
             transactions[i]['prevPrice'], transactions[i]['isReset'] = sellMinOnTransaction_v3(transactions[i]['prevPrice'])
 
-            if not transactions[i]['isReset']:
-                single_click(TARGET_WINDOW,  908, 617)
+            # if not transactions[i]['isReset']:
+            #     single_click(TARGET_WINDOW,  908, 617)
 
         # ĐÓNG MODAL
         if modalType == 'buy':
@@ -432,16 +434,16 @@ def runOnTransactions_v3(numRow=4, resetTime=None):
         
 
         # CHỜ ĐÓNG MODAL
-        isClosed = waitModal_v3(until='close')
+        isClosed = waitModal_v3(status='close')
         if not isClosed:
             saveImage(capture_window(TARGET_WINDOW), f'timeout_{time.time()}.png')
             if modalType == 'buy':
-                if not transactions[i]['isReset']:
-                    single_click(TARGET_WINDOW, 971, 587)
+                # if not transactions[i]['isReset']:
+                single_click(TARGET_WINDOW, 971, 587)
             else:
-                if not transactions[i]['isReset']:
-                    single_click(TARGET_WINDOW,  908, 617)
-            waitModal_v3(until='close')
+                # if not transactions[i]['isReset']:
+                single_click(TARGET_WINDOW,  908, 617)
+            waitModal_v3(status='close')
 
         # print(transactions)
         # time.sleep(3)
@@ -524,7 +526,7 @@ def runOnFavourite(numRow=1):
 def main():
     # resetTime = [toResetTime("Chẵn 05 - Chẵn 25"), toResetTime("Chẵn 41 - Lẻ 01"), toResetTime("Chẵn 11 - Chẵn 31"), toResetTime("Chẵn 18 - Chẵn 38"), toResetTime("Chẵn 06 - Chẵn 26")]
     # runOnTransactions_v2(buyMaxOnTransaction, 'buy', len(resetTime), resetTime)
-    runOnTransactions_v3(numRow=3)
+    # runOnTransactions_v3(numRow=3)
     # runOnFavourite(1)
     # captureTemplate([536, 205, 26, 15], 'buy_modal_bigger.png')
 
@@ -532,7 +534,7 @@ def main():
 
     # NEW TEMPLATE
     # captureTemplate([896, 312, 142, 20], 'max_price.png')
-    # captureTemplate([900, 320, 142, 20], 'min_price.png')
+    captureTemplate([647, 344, 73, 16], 'spam_error.png')
     
     # TEST
     # testImage([962, 315, 77, 54], BUY_MODAL_IMAGE)

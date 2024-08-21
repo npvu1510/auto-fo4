@@ -152,7 +152,7 @@ def single_click(hwnd, x, y, hover=False, draw=''):
 
     if hover:
         post_message(hwnd, 0x0200, 0, lparam)  # WM_MOUSEMOVE
-        time.sleep(0.1)
+        time.sleep(0.05)
 
     post_message(hwnd, WM_LBUTTONDOWN, 0, lparam)
     post_message(hwnd, WM_LBUTTONUP, 0, lparam)
