@@ -1,3 +1,7 @@
 __pycache__/
 auto-env/
 timing_captures/
+*updated*.png
+
+*timeout*.png
+*test*.*

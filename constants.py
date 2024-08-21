@@ -2,26 +2,29 @@ import cv2
 
 # ---------------------------------------------------------------- TEMPLATES ----------------------------------------------------------------
 # MODAL
-BUY_MODAL_IMAGE = cv2.imread('./templates/buy_modal.png') 
-BUY_MODAL_BIGGER_IMAGE = cv2.imread('./templates/buy_modal_bigger.png')
-BUY_MODAL_BACKUP_IMAGE = cv2.imread('./templates/1600x1900/buy_modal_backup.png') 
+# BUY_MODAL_IMAGE = cv2.imread('./templates/buy_modal.png') 
+# BUY_MODAL_BIGGER_IMAGE = cv2.imread('./templates/buy_modal_bigger.png')
+# BUY_MODAL_BACKUP_IMAGE = cv2.imread('./templates/1600x1900/buy_modal_backup.png') 
 
-SELL_MODAL_IMAGE = cv2.imread('./templates/sell_modal.png') 
-BOUGHT_MODAL_IMAGE = cv2.imread('./templates/bought_modal.png')
-SOLD_MODAL_IMAGE = cv2.imread('./templates/sold_modal.png')
-SOLD_MULTI_MODAL_IMAGE = cv2.imread('./templates/sold_multi_modal.png')
-CLOSE_MODAL_IMAGE = cv2.imread('./templates/close_modal.png') 
-# RESET_MODAL_IMAGE = cv2.imread('./templates/reset_modal.png') 
-# CANCEL_MODAL_IMAGE = cv2.imread('./templates/cancel_modal.png') 
+# SELL_MODAL_IMAGE = cv2.imread('./templates/sell_modal.png') 
+# BOUGHT_MODAL_IMAGE = cv2.imread('./templates/bought_modal.png')
+# SOLD_MODAL_IMAGE = cv2.imread('./templates/sold_modal.png')
+# SOLD_MULTI_MODAL_IMAGE = cv2.imread('./templates/sold_multi_modal.png')
+# CLOSE_MODAL_IMAGE = cv2.imread('./templates/close_modal.png') 
+# # RESET_MODAL_IMAGE = cv2.imread('./templates/reset_modal.png') 
+# # CANCEL_MODAL_IMAGE = cv2.imread('./templates/cancel_modal.png') 
 
-# TRANSACTIONS
+# # TRANSACTIONS
 HYPHEN_IMAGE = cv2.imread('./templates/hyphen.png') 
 
-# FAVORITES
-PRICE_UPDATING_IMAGE = cv2.imread('./templates/price_updating.png') 
+
+# # FAVORITES
+# PRICE_UPDATING_IMAGE = cv2.imread('./templates/price_updating.png') 
 
 
-
+# 1600x900
+BUY_MODAL_1600_1900 = cv2.imread('./templates/1600x900/buy_modal.png') 
+HYPHEN_BIGGER_IMAGE = cv2.imread('./templates/1600x900/hyphen.png') 
 
 
 # ----------------------------------------------------------------  CAPTURE POSITIONS ----------------------------------------------------------------
@@ -50,4 +53,13 @@ IN_BUY_MODAL_NAME_POS = 300, 345, 77, 14
 IN_SELL_MODAL_NAME_POS = 300, 375, 77, 14
 
 
-# ---------------------------------------------------------------- ... ----------------------------------------------------------------
+# ---------------------------------------------------------------- RESET TIME ----------------------------------------------------------------
+from timeCheck import  toResetTime
+
+RESET_TIME = {
+    "Scamacca": toResetTime("Chẵn 18 - Chẵn 38"),
+    "Correa": toResetTime("Chẵn 15 - Chẵn 35"),
+    "Unal": toResetTime("Chẵn 01 - Chẵn 21"),
+    "Anguissa": toResetTime("Chẵn 20 - Chẵn 40"),
+    "Awoniyi": toResetTime("Chẵn 06 - Chẵn 26")
+}

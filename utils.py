@@ -1,8 +1,11 @@
 import os
 import cv2
 
+from skimage.metrics import structural_similarity as compare_ssim
+
 # my modules
 from winApi import *
+
 
 def imageToArr(image):
     return np.array(image)
@@ -12,15 +15,6 @@ def saveImage(image, imageName):
 
 
 # ---------------------------------------------------------------- CALCULATION FUNCTIONS ----------------------------------------------------------------
-def mse(img1, img2, threshold = 0.0):
-    h, w = img1.shape
-    diff = cv2.subtract(img1, img2)
-    err = np.sum(diff**2)
-    mse = err/(float(h*w))
-
-    print(mse)
-    return mse != threshold, diff
-
 def absDiff(img1, img2, threshold = 30):
     diff = cv2.absdiff(img1, img2)
     _, thresh = cv2.threshold(diff, threshold, 255, cv2.THRESH_BINARY)
@@ -41,7 +35,6 @@ def compareImage(img1, img2, threshold = 50, showDiff = False):
     
     return isDifferent
 
-from skimage.metrics import structural_similarity as compare_ssim
 def compareImage_v2(img1, img2, threshold=0.95, showDiff=False, showScore = False):
     # Chuyển ảnh sang grayscale
     img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
@@ -65,7 +58,7 @@ def compareImage_v2(img1, img2, threshold=0.95, showDiff=False, showScore = Fals
     return isDifferent
 
 # ---------------------------------------------------------------- TEST FUNCTIONS ----------------------------------------------------------------
-def captureTemplate(position, templateName, subFolder="1600x1900"):
+def captureTemplate(position, templateName, subFolder="1600x900"):
     template = capture_window_region(TARGET_WINDOW, position[0], position[1], position[2], position[3])
     saveImage(template, f"./templates/{subFolder}/{templateName}")
 
