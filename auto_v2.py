@@ -157,17 +157,16 @@ def waitModal_v4(template, pos):
     
     start = time.time()
     while compareImage_v2(template, imageToArr(currentImg), threshold=0.95):
-        if time.time() - start >= 2:
+        if time.time() - start >= 10:
             return False
             
         currentImg = capture_window_region(TARGET_WINDOW, pos[0], pos[1], pos[2], pos[3])
         # print("Đang chờ modal mở...")
     # signatureImg = capture_window_region(TARGET_WINDOW, pos[0], pos[1], pos[2], pos[3])
     
-    maxPriceImage = capture_window_region(TARGET_WINDOW, 1200, 382, 100, 24)
-    # resultImg = capture_window(TARGET_WINDOW)
-    # saveImage(signatureImg, 'templates/1600x1900/signatureImg.png')
-    # saveImage(maxPriceImage, 'templates/1600x1900/maxPriceImage.png')
+    maxPriceImage = capture_window_region(TARGET_WINDOW, 1240, 382, 43, 24)
+    saveImage(maxPriceImage, 'z.png')
+    exit(0)
     return maxPriceImage
     
 # buyModalImage_1600x900 = cv2.imread('./templates/1600x1900/163.png') 
@@ -230,8 +229,7 @@ def runOnTransactions_v4(resetTimes=[]):
             # print(f'{row+1}: Thay đổi' if isDiff else f'{row+1}: Không thay đổi')
 
             # Giá đã thay đổi
-            if isDiff:
-                
+            if isDiff:                
                 single_click(TARGET_WINDOW, 1284, 395)
                 time.sleep(0.075)
                 single_click(TARGET_WINDOW, 1034, 725)
@@ -257,23 +255,109 @@ def runOnTransactions_v4(resetTimes=[]):
         row = row + 1 if row < numRow - 1 else 0
         time.sleep(0.2)
 
+import numpy as np
+
+def compareImage_template(img1, img2, threshold=0.8, showDiff=False):
+    # Chuyển hình ảnh sang grayscale
+    img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+    img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+
+    # So khớp mẫu
+    result = cv2.matchTemplate(img1, img2, cv2.TM_CCOEFF_NORMED)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+
+    isDifferent = max_val < threshold
+
+    print(max_val)
+
+    if showDiff:
+        h, w = img2.shape[:2]
+        top_left = max_loc
+        bottom_right = (top_left[0] + w, top_left[1] + h)
+        cv2.rectangle(img1, top_left, bottom_right, 255, 2)
+        cv2.imshow("difference", img1)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+    return isDifferent
+
+# # Ví dụ sử dụng
+# result = compareImage_template(img1, img2, threshold=0.8, showDiff=True)
+# print("Images are different:", result)
+
+def compareImage_feature(img1, img2, showDiff=False):
+    # Chuyển hình ảnh sang grayscale
+    img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+    img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+
+    # Tạo đối tượng SIFT
+    sift = cv2.SIFT_create()
+
+    # Phát hiện và tính toán các đặc trưng
+    keypoints_1, descriptors_1 = sift.detectAndCompute(img1, None)
+    keypoints_2, descriptors_2 = sift.detectAndCompute(img2, None)
+
+    # So khớp các đặc trưng
+    bf = cv2.BFMatcher(cv2.NORM_L2, crossCheck=True)
+    matches = bf.match(descriptors_1, descriptors_2)
+
+    # Sắp xếp các so khớp theo khoảng cách
+    matches = sorted(matches, key=lambda x: x.distance)
+    print(len(matches), len(keypoints_1) *0.8)
+
+    isDifferent = len(matches) < len(keypoints_1) * 0.8
+
+    if showDiff:
+        img_matches = cv2.drawMatches(img1, keypoints_1, img2, keypoints_2, matches, None)
+        cv2.imshow("Matches", img_matches)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+    return isDifferent
+
+
+
+def compareImage_moments(img1, img2):
+    img1_gray = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+    img2_gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+
+    moments1 = cv2.moments(img1_gray)
+    moments2 = cv2.moments(img2_gray)
+
+    hu_moments1 = cv2.HuMoments(moments1).flatten()
+    hu_moments2 = cv2.HuMoments(moments2).flatten()
+
+    # Tính sự khác biệt giữa các moments
+    diff = np.sum(np.abs(hu_moments1 - hu_moments2))
+    print(diff)
+    
+    return diff < 0.01  # Ngưỡng thấp cho thấy các ảnh rất giống nhau
+
+
+
 
 a = 1.25
 def main():
     # resetTimes = [RESET_TIME['Scamacca'], RESET_TIME['Correa'], RESET_TIME['Unal']]
     # resetTimes = [RESET_TIME['Rowe'], RESET_TIME['Guedes'], RESET_TIME['Milik'], RESET_TIME['Correa'], RESET_TIME['Unal']]
-    resetTimes = [RESET_TIME['Muani'] , RESET_TIME['Sangare'] , RESET_TIME['Awoniyi'] , RESET_TIME['Correa']]
+    # resetTimes = [RESET_TIME['Muani'] , RESET_TIME['Sangare'] , RESET_TIME['Correa'],  RESET_TIME['Awoniyi']]
     # runOnTransactions_v4(resetTimes)
 
+    # waitModal_v4(BUY_MODAL_1600_1900, [1270, 536, 35, 44])
+    # exit()
 
 
+    # img1 = cv2.imread('./129.png')
+    # img2 = cv2.imread('./133.png')
+    img1 = cv2.imread('./129.png')
+    img2 = cv2.imread('./133.png')
+    # # currentPrice = capture_window_region(TARGET_WINDOW, int(576 * a), int(ORDER_ROW_POS[0] * a) - 6, int(80 * a), int(16 * a))
 
-    img1 = cv2.imread('./currentPrice_1724305748.6365743.png')
-    img2 = cv2.imread('./prevPrice_1_1724305748.61563.png')
-    # currentPrice = capture_window_region(TARGET_WINDOW, int(576 * a), int(ORDER_ROW_POS[0] * a) - 6, int(80 * a), int(16 * a))
-
-    # print(compareImage_v2(imageToArr(currentPrice), HYPHEN_BIGGER_IMAGE, threshold=0.85, showScore=True))
-    print(compareImage_v2(imageToArr(img1), imageToArr(img2), threshold=0.75, showScore=True))
+    # print(compareImage(imageToArr(img1), imageToArr(img2), threshold=80, showDiff=True))
+    # print(compareImage_v2(imageToArr(img1), imageToArr(img2), threshold=0.75, showScore=True))
+    # print(compareImage_template(imageToArr(img1), imageToArr(img2), threshold=0.75))
+    # print(compareImage_feature(imageToArr(img1), imageToArr(img2)))
+    print(compareImage_moments(imageToArr(img1), imageToArr(img2)))
 
 
     # for y in ORDER_ROW_POS:
