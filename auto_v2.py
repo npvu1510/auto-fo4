@@ -156,7 +156,7 @@ def waitModal_v4(template, pos):
     currentImg = capture_window_region(TARGET_WINDOW, pos[0], pos[1], pos[2], pos[3])
     
     start = time.time()
-    while compareImage_v2(template, imageToArr(currentImg), threshold=0.85):
+    while compareImage_v2(template, imageToArr(currentImg), threshold=0.95):
         if time.time() - start >= 2:
             return False
             
@@ -183,23 +183,29 @@ def runOnTransactions_v4(resetTimes=[]):
     row = 0
     while True:
         # KHỞI ĐẦU MỖI DÒNG
-        time.sleep(0.25)
-
         os.system('cls')
         print(f"👉 Dòng {row + 1}")
 
+        # KIỂM TRA CÓ GẶP LỖI KHÔNG ?
+        if not (compareImage(imageToArr(capture_window_region(TARGET_WINDOW, 782, 422, 118, 22)), SPAM_ERROR_1600_1900)):
+            single_click(TARGET_WINDOW, 902, 590)
+            time.sleep(300)
+            return
+
         # KIỂM TRA CÓ ĐANG TRONG GIỜ RESET KHÔNG ?
-        message = time_until_reset(resetTimes[row], offset=20)
+        message = time_until_reset(resetTimes[row], offset=10)
         if isinstance(message, str):
             print(message)
 
             updated[row] = False
+            
             row = row + 1 if row < numRow - 1 else 0
             continue
 
         # KIỂM TRA ĐÃ CẬP NHẬT GIÁ Ở ĐỢT RESET NÀY CHƯA ?
         if updated[row]:
             print("Giá đã được cập nhật rồi")
+
             row = row + 1 if row < numRow - 1 else 0
             continue
 
@@ -212,13 +218,15 @@ def runOnTransactions_v4(resetTimes=[]):
         currentPrice = waitModal_v4(BUY_MODAL_1600_1900, [1270, 536, 35, 44])
         if not currentPrice:
             single_click(TARGET_WINDOW, 1214, 724)
+
+            time.sleep(0.2)
             continue
 
         # timing_capture([1270, 536, 35, 44])
 
         # testRow = row + 1 if row + 1 < numRow else 0
         if prevPrice[row]:
-            isDiff = compareImage_v2(imageToArr(prevPrice[row]), imageToArr(currentPrice), threshold=0.75, showScore=True)
+            isDiff = compareImage_v2(imageToArr(prevPrice[row]), imageToArr(currentPrice), threshold=0.8, showScore=True)
             # print(f'{row+1}: Thay đổi' if isDiff else f'{row+1}: Không thay đổi')
 
             # Giá đã thay đổi
@@ -227,15 +235,17 @@ def runOnTransactions_v4(resetTimes=[]):
                 single_click(TARGET_WINDOW, 1284, 395)
                 time.sleep(0.075)
                 single_click(TARGET_WINDOW, 1034, 725)
-                # time.sleep(0.01)
+                saveImage(capture_window(TARGET_WINDOW), f'updated_{time.time()}.png')
+                time.sleep(0.1)
+
                 send_key(TARGET_WINDOW, KEY_CODES['ESC'])
 
-                saveImage(capture_window(TARGET_WINDOW))
                 updated[row] = True
+                
 
                 # FOR DEBUGGING
-                # saveImage(prevPrice[row], 'prevPrice.png')
-                # saveImage(currentPrice, 'currentPrice.png')
+                saveImage(prevPrice[row], f'prevPrice_{row}_{time.time()}.png')
+                saveImage(currentPrice, f'currentPrice_{time.time()}.png')
                 # return 
                 pass
         
@@ -243,33 +253,27 @@ def runOnTransactions_v4(resetTimes=[]):
         
         # Tắt modal
         single_click(TARGET_WINDOW, 1214, 724)           
+
         row = row + 1 if row < numRow - 1 else 0
+        time.sleep(0.2)
+
 
 a = 1.25
 def main():
     # resetTimes = [RESET_TIME['Scamacca'], RESET_TIME['Correa'], RESET_TIME['Unal']]
-    resetTimes = [RESET_TIME['Rowe'], RESET_TIME['Guedes'], RESET_TIME['Milik']]
-
-    runOnTransactions_v4(resetTimes)
-
-
+    # resetTimes = [RESET_TIME['Rowe'], RESET_TIME['Guedes'], RESET_TIME['Milik'], RESET_TIME['Correa'], RESET_TIME['Unal']]
+    resetTimes = [RESET_TIME['Muani'] , RESET_TIME['Sangare'] , RESET_TIME['Awoniyi'] , RESET_TIME['Correa']]
+    # runOnTransactions_v4(resetTimes)
 
 
 
 
-
-
-    # start = time.time()
-    # res = isAvailableBuySlot()
-    # print(res)
-
-    # print(time.time() - start)
-
-
-
+    img1 = cv2.imread('./currentPrice_1724305748.6365743.png')
+    img2 = cv2.imread('./prevPrice_1_1724305748.61563.png')
     # currentPrice = capture_window_region(TARGET_WINDOW, int(576 * a), int(ORDER_ROW_POS[0] * a) - 6, int(80 * a), int(16 * a))
 
     # print(compareImage_v2(imageToArr(currentPrice), HYPHEN_BIGGER_IMAGE, threshold=0.85, showScore=True))
+    print(compareImage_v2(imageToArr(img1), imageToArr(img2), threshold=0.75, showScore=True))
 
 
     # for y in ORDER_ROW_POS:
@@ -278,7 +282,10 @@ def main():
 
     # NEW TEMPLATE
     # captureTemplate([int(576 * a), int(ORDER_ROW_POS[0] * a) - 6, int(80 * a), int(16 * a)], 'hyphen.png')
-    # captureTemplate([647, 344, 73, 16], 'spam_error.png')
+    # captureTemplate([782, 422, 118, 22], 'spam_error.png')
+
+    # TEST TEMPLATE
+    # testImage([782, 422, 118, 22], SPAM_ERROR_1600_1900)
 
     
 

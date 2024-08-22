@@ -24,7 +24,8 @@ HYPHEN_IMAGE = cv2.imread('./templates/hyphen.png')
 
 # 1600x900
 BUY_MODAL_1600_1900 = cv2.imread('./templates/1600x900/buy_modal.png') 
-HYPHEN_BIGGER_IMAGE = cv2.imread('./templates/1600x900/hyphen.png') 
+HYPHEN_BIGGER_IMAGE = cv2.imread('./templates/1600x900/hyphen.png')
+SPAM_ERROR_1600_1900 = cv2.imread('./templates/1600x900/spam_error.png')
 
 
 # ----------------------------------------------------------------  CAPTURE POSITIONS ----------------------------------------------------------------
@@ -56,6 +57,7 @@ IN_SELL_MODAL_NAME_POS = 300, 375, 77, 14
 # ---------------------------------------------------------------- RESET TIME ----------------------------------------------------------------
 from timeCheck import  toResetTime
 
+
 RESET_TIME = {
     "Scamacca": toResetTime("Chẵn 18 - Chẵn 38"),
     "Correa": toResetTime("Chẵn 15 - Chẵn 35"),
@@ -64,5 +66,21 @@ RESET_TIME = {
     "Awoniyi": toResetTime("Chẵn 06 - Chẵn 26"),
     "Rowe": toResetTime("Chẵn 30 - Chẵn 50"),
     "Guedes": toResetTime("Chẵn 15 - Chẵn 35"),
-    "Milik": toResetTime("Lẻ 59 - Chẵn 19")
+    "Milik": toResetTime("Lẻ 59 - Chẵn 19"),
+    "Muani": toResetTime("Chẵn 18 - Chẵn 38"),
+    "Bravo": toResetTime("Chẵn 00-25"),
+    "Sangare": toResetTime("Chẵn 24 - Chẵn 44"),
+    "Benítez": toResetTime("Chẵn 31 - Chẵn 51")
+
 }
+
+
+# SPAM ERROR
+# a
+# TUYỆT ĐỐI: 861, 481
+# TƯƠNG ĐỐI: 782, 422
+
+
+# a
+# TUYỆT ĐỐI: 979, 503        
+# TƯƠNG ĐỐI: 900, 444,118, 22

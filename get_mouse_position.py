@@ -19,7 +19,7 @@ def get_mouse_relative_coordinates(window_title):
             relative_y = mouse_y - window_info[1]
             
             if keyboard.is_pressed('F12'):
-                print('a')
+                # print('a')
                 # In vị trí tương đối
                 print(f"TUYỆT ĐỐI: {mouse_x}, {mouse_y}")
 

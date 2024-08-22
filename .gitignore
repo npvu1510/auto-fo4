@@ -1,7 +1,8 @@
 __pycache__/
-auto-env/
+env/
 timing_captures/
 *updated*.png
-
 *timeout*.png
+*currentPrice*.png
+*prevPrice*.png
 *test*.*
