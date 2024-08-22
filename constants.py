@@ -23,7 +23,9 @@ HYPHEN_IMAGE = cv2.imread('./templates/hyphen.png')
 
 
 # 1600x900
-BUY_MODAL_1600_1900 = cv2.imread('./templates/1600x900/buy_modal.png') 
+# BUY_MODAL_1600_1900 = cv2.imread('./templates/1600x900/buy_modal.png') 
+BUY_MODAL_1600_1900 = cv2.imread('./templates/1600x900/4362.png') 
+
 HYPHEN_BIGGER_IMAGE = cv2.imread('./templates/1600x900/hyphen.png')
 SPAM_ERROR_1600_1900 = cv2.imread('./templates/1600x900/spam_error.png')
 

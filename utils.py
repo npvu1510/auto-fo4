@@ -57,6 +57,33 @@ def compareImage_v2(img1, img2, threshold=0.95, showDiff=False, showScore = Fals
 
     return isDifferent
 
+
+def compareImage_template(img1, img2, threshold=0.8, showDiff=False):
+    # Chuyển hình ảnh sang grayscale
+    img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+    img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+
+    # So khớp mẫu
+    result = cv2.matchTemplate(img1, img2, cv2.TM_CCOEFF_NORMED)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+
+    isDifferent = max_val < threshold
+
+    print(max_val)
+
+    if showDiff:
+        h, w = img2.shape[:2]
+        top_left = max_loc
+        bottom_right = (top_left[0] + w, top_left[1] + h)
+        cv2.rectangle(img1, top_left, bottom_right, 255, 2)
+        cv2.imshow("difference", img1)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+    return isDifferent
+
+
+
 # ---------------------------------------------------------------- TEST FUNCTIONS ----------------------------------------------------------------
 def captureTemplate(position, templateName, subFolder="1600x900"):
     template = capture_window_region(TARGET_WINDOW, position[0], position[1], position[2], position[3])
