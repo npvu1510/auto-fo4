@@ -72,8 +72,9 @@ RESET_TIME = {
     "Muani": toResetTime("Chẵn 18 - Chẵn 38"),
     "Bravo": toResetTime("Chẵn 00-25"),
     "Sangare": toResetTime("Chẵn 24 - Chẵn 44"),
-    "Benítez": toResetTime("Chẵn 31 - Chẵn 51")
-
+    "Benítez": toResetTime("Chẵn 31 - Chẵn 51"),
+    "Gordon": toResetTime("Chẵn 36 - Chẵn 56"),
+    "Matić": toResetTime("Lẻ 54 - Chẵn 14")
 }
 
 

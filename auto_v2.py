@@ -244,8 +244,8 @@ def runOnTransactions_v4(resetTimes=[]):
                 
 
                 # FOR DEBUGGING
-                saveImage(prevPrice[row], f'prevPrice_{row}_{time.time()}.png')
-                saveImage(currentPrice, f'currentPrice_{time.time()}.png')
+                # saveImage(prevPrice[row], f'prevPrice_{row}_{time.time()}.png')
+                # saveImage(currentPrice, f'currentPrice_{time.time()}.png')
                 # return 
                 pass
         
@@ -262,7 +262,7 @@ a = 1.25
 def main():
     # resetTimes = [RESET_TIME['Scamacca'], RESET_TIME['Correa'], RESET_TIME['Unal']]
     # resetTimes = [RESET_TIME['Rowe'], RESET_TIME['Guedes'], RESET_TIME['Milik'], RESET_TIME['Correa'], RESET_TIME['Unal']]
-    resetTimes = [RESET_TIME['Muani'] , RESET_TIME['Sangare'] , RESET_TIME['Correa'],  RESET_TIME['Awoniyi']]
+    resetTimes = [RESET_TIME['Sangare'] ,RESET_TIME['Awoniyi'],  RESET_TIME['Correa'], RESET_TIME['Muani'] , RESET_TIME['Gordon'],  RESET_TIME['Matić']]
     runOnTransactions_v4(resetTimes)
 
     # waitModal_v4(BUY_MODAL_1600_1900, [1270, 536, 35, 44])    
