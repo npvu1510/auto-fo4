@@ -156,7 +156,7 @@ def waitModal_v4(template, pos):
     currentImg = capture_window_region(TARGET_WINDOW, pos[0], pos[1], pos[2], pos[3])
     
     start = time.time()
-    while compareImage_v2(template, imageToArr(currentImg), threshold=0.9):
+    while compareImage_v2(template, imageToArr(currentImg), threshold=0.95):
     # while compareImage(template, imageToArr(currentImg), threshold=30):
     
         if time.time() - start >= 2:
@@ -167,6 +167,7 @@ def waitModal_v4(template, pos):
     
     # maxPriceImage = capture_window_region(TARGET_WINDOW, 1240, 382, 43, 24)
     maxPriceImage = capture_window_region(TARGET_WINDOW, 1230, 382, 56, 22)
+    saveImage(maxPriceImage, 'maxPriceImage.png')
 
     return maxPriceImage
     
@@ -181,7 +182,13 @@ def runOnTransactions_v4(resetTimes=[]):
     updated = [False] * numRow
 
     row = 0
+    # startCountdown = time.time()
     while True:
+        # if time.time() - startCountdown >= 300:
+        #     print("Đang tạm dừng tránh spam...")
+        #     time.sleep(30)
+        #     startCountdown = time.time()
+
         # KHỞI ĐẦU MỖI DÒNG
         os.system('cls')
         print(f"👉 Dòng {row + 1}")
@@ -227,16 +234,16 @@ def runOnTransactions_v4(resetTimes=[]):
 
         # testRow = row + 1 if row + 1 < numRow else 0
         if prevPrice[row]:
-            isDiff = compareImage_v2(imageToArr(prevPrice[row]), imageToArr(currentPrice), threshold=0.85, showScore=True)
+            isDiff = compareImage_v2(imageToArr(prevPrice[row]), imageToArr(currentPrice), threshold=0.9, showScore=True)
             # print(f'{row+1}: Thay đổi' if isDiff else f'{row+1}: Không thay đổi')
 
             # Giá đã thay đổi
             if isDiff:                
                 single_click(TARGET_WINDOW, 1284, 395)
-                time.sleep(0.075)
+                time.sleep(0.05)
                 single_click(TARGET_WINDOW, 1034, 725)
                 saveImage(capture_window(TARGET_WINDOW), f'updated_{time.time()}.png')
-                time.sleep(0.1)
+                time.sleep(0.05)
 
                 send_key(TARGET_WINDOW, KEY_CODES['ESC'])
 
@@ -247,6 +254,7 @@ def runOnTransactions_v4(resetTimes=[]):
                 # saveImage(prevPrice[row], f'prevPrice_{row}_{time.time()}.png')
                 # saveImage(currentPrice, f'currentPrice_{time.time()}.png')
                 # return 
+                time.sleep(2)
                 pass
         
         prevPrice[row] = currentPrice
@@ -262,7 +270,8 @@ a = 1.25
 def main():
     # resetTimes = [RESET_TIME['Scamacca'], RESET_TIME['Correa'], RESET_TIME['Unal']]
     # resetTimes = [RESET_TIME['Rowe'], RESET_TIME['Guedes'], RESET_TIME['Milik'], RESET_TIME['Correa'], RESET_TIME['Unal']]
-    resetTimes = [RESET_TIME['Sangare'] ,RESET_TIME['Awoniyi'],  RESET_TIME['Correa'], RESET_TIME['Muani'] , RESET_TIME['Gordon'],  RESET_TIME['Matić']]
+    resetTimes = [RESET_TIME['Sangare'], RESET_TIME['Guedes'],  RESET_TIME['Scamacca'],RESET_TIME['Awoniyi']]
+    # time.sleep(1800)
     runOnTransactions_v4(resetTimes)
 
     # waitModal_v4(BUY_MODAL_1600_1900, [1270, 536, 35, 44])    
