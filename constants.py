@@ -74,7 +74,26 @@ RESET_TIME = {
     "Sangare": toResetTime("Chẵn 24 - Chẵn 44"),
     "Benítez": toResetTime("Chẵn 31 - Chẵn 51"),
     "Gordon": toResetTime("Chẵn 36 - Chẵn 56"),
-    "Matić": toResetTime("Lẻ 54 - Chẵn 14")
+    "Matić": toResetTime("Lẻ 54 - Chẵn 14"),
+    'Bremer': toResetTime("Chẵn 00-25"),
+    'Nunes': toResetTime("Chẵn 56 - Lẻ 16"),
+    "Jose": toResetTime("Chẵn 09 - Chẵn 29"),
+    "Kampl": toResetTime("Chẵn 30-59"),
+    "Chandler": toResetTime("Chẵn 30-59"),
+    "Saponara": toResetTime("Chẵn 30-59"),
+    "Iwobi": toResetTime("Chẵn 00-25"),
+    "Patricio": toResetTime("Chẵn 00-25"),
+    "Banega": toResetTime("Chẵn 30-59"),
+    "Grifo": toResetTime("Chẵn 30-59"),
+    "Anderson": toResetTime("Chẵn 30-59"),
+    "Kaka": toResetTime("Chẵn 00-25"),
+    "Henry": toResetTime("Chẵn 20-40"),
+    "Pirlo": toResetTime("Chẵn 20-40"),
+    "Mathu": toResetTime("Chẵn 00-25"),
+    "Bergkamp": toResetTime("Chẵn 00-25"),
+    "Illarramendi": toResetTime("Chẵn 00-25"),
+    "Inaki": toResetTime("Chẵn 30-59"),
+
 }
 
 

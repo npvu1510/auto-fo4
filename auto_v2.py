@@ -96,7 +96,7 @@ def runOnFavourite(numRow=1):
         single_click(TARGET_WINDOW,835, 179)
         time.sleep(0.05)
         single_click(TARGET_WINDOW,669, 178)
-        time.sleep(0.2)
+        time.sleep(0.25)
 
         # Làm gì đó.......
         # Kiểm tra giá trị cầu thủ đã thay đổi chưa?
@@ -166,8 +166,8 @@ def waitModal_v4(template, pos):
         # print("Đang chờ modal mở...")
     
     # maxPriceImage = capture_window_region(TARGET_WINDOW, 1240, 382, 43, 24)
-    maxPriceImage = capture_window_region(TARGET_WINDOW, 1230, 382, 56, 22)
-    saveImage(maxPriceImage, 'maxPriceImage.png')
+    maxPriceImage = capture_window_region(TARGET_WINDOW, 1220, 382, 66, 22)
+    # saveImage(maxPriceImage, 'maxPriceImage.png')
 
     return maxPriceImage
     
@@ -199,18 +199,19 @@ def runOnTransactions_v4(resetTimes=[]):
             time.sleep(300)
             return
 
-        # # KIỂM TRA CÓ ĐANG TRONG GIỜ RESET KHÔNG ?
-        message = time_until_reset(resetTimes[row], offset=10)
-        if isinstance(message, str):
-            print(message)
+        # KIỂM TRA CÓ ĐANG TRONG GIỜ RESET KHÔNG ?
+        if resetTimes[row]:
+            message = time_until_reset(resetTimes[row], offset=10)
+            if isinstance(message, str):
+                print(message)
 
-            updated[row] = False
-            
-            row = row + 1 if row < numRow - 1 else 0
-            continue
+                updated[row] = False
+                
+                row = row + 1 if row < numRow - 1 else 0
+                continue
 
         # KIỂM TRA ĐÃ CẬP NHẬT GIÁ Ở ĐỢT RESET NÀY CHƯA ?
-        if updated[row]:
+        if resetTimes[row] and updated[row]:
             print("Giá đã được cập nhật rồi")
 
             row = row + 1 if row < numRow - 1 else 0
@@ -226,7 +227,7 @@ def runOnTransactions_v4(resetTimes=[]):
         if not currentPrice:
             single_click(TARGET_WINDOW, 1214, 724)
 
-            time.sleep(0.2)
+            time.sleep(0.25)
             continue
 
         # timing_capture([1270, 536, 35, 44])
@@ -234,16 +235,16 @@ def runOnTransactions_v4(resetTimes=[]):
 
         # testRow = row + 1 if row + 1 < numRow else 0
         if prevPrice[row]:
-            isDiff = compareImage_v2(imageToArr(prevPrice[row]), imageToArr(currentPrice), threshold=0.9, showScore=True)
+            isDiff = compareImage_v2(imageToArr(prevPrice[row]), imageToArr(currentPrice), threshold=0.95, showScore=True)
             # print(f'{row+1}: Thay đổi' if isDiff else f'{row+1}: Không thay đổi')
 
             # Giá đã thay đổi
-            if isDiff:                
+            if  isDiff:                
                 single_click(TARGET_WINDOW, 1284, 395)
-                time.sleep(0.05)
+                time.sleep(0.01)
                 single_click(TARGET_WINDOW, 1034, 725)
                 saveImage(capture_window(TARGET_WINDOW), f'updated_{time.time()}.png')
-                time.sleep(0.05)
+                time.sleep(0.1)
 
                 send_key(TARGET_WINDOW, KEY_CODES['ESC'])
 
@@ -251,8 +252,8 @@ def runOnTransactions_v4(resetTimes=[]):
                 
 
                 # FOR DEBUGGING
-                # saveImage(prevPrice[row], f'prevPrice_{row}_{time.time()}.png')
-                # saveImage(currentPrice, f'currentPrice_{time.time()}.png')
+                saveImage(prevPrice[row], f'prevPrice_{row}_{time.time()}.png')
+                saveImage(currentPrice, f'currentPrice_{time.time()}.png')
                 # return 
                 time.sleep(2)
                 pass
@@ -263,14 +264,17 @@ def runOnTransactions_v4(resetTimes=[]):
         single_click(TARGET_WINDOW, 1214, 724)           
 
         row = row + 1 if row < numRow - 1 else 0
-        time.sleep(0.2)
+        time.sleep(0.25)
 
 
 a = 1.25
 def main():
     # resetTimes = [RESET_TIME['Scamacca'], RESET_TIME['Correa'], RESET_TIME['Unal']]
     # resetTimes = [RESET_TIME['Rowe'], RESET_TIME['Guedes'], RESET_TIME['Milik'], RESET_TIME['Correa'], RESET_TIME['Unal']]
-    resetTimes = [RESET_TIME['Sangare'], RESET_TIME['Guedes'],  RESET_TIME['Scamacca'],RESET_TIME['Awoniyi']]
+    # resetTimes = [RESET_TIME['Banega'], RESET_TIME['Nunes']]
+    # resetTimes = [RESET_TIME['Henry'], RESET_TIME['Bergkamp']]
+    resetTimes = [RESET_TIME['Illarramendi'], RESET_TIME['Banega']]
+
     # time.sleep(1800)
     runOnTransactions_v4(resetTimes)
 
