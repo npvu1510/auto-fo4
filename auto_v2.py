@@ -96,7 +96,7 @@ def waitingForModal(template, pos, appear = True, timeout = 2, threshold = 0.85,
     return maxPriceImage
     
 # ---------------------------------------------------------------- FAVORORITES FUNCTIONS ----------------------------------------------------------------
-def runOnFavourite(resetTime = False):
+def runOnFavourite(resetTime = None, autoCancel = False , grade = 1):
     prevPrice = currentPrice = updated = None
     failed = False
 
@@ -113,13 +113,13 @@ def runOnFavourite(resetTime = False):
         if resetTime:
             message = time_until_reset(resetTime, offset=10)
             if isinstance(message, str):
-                print(message)
+                print(f'⌚ {message}')
 
                 updated = False
                 time.sleep(30)
                 continue
             else:
-                if failed:
+                if autoCancel and failed:
                     cancelFirstOrder()
                     failed = False
 
@@ -158,8 +158,10 @@ def runOnFavourite(resetTime = False):
 
                 saveImage(capture_window(TARGET_WINDOW), f'updated_{time.time()}.png')
 
-                # Cập nhật biến
-                failed = not checkingToCancelOrder(1) 
+                # Kiểm tra xem có tranh được slot 1 không ? Nếu không lát sẽ hủy, để có lại BP
+                failed = not checkingToCancelOrder(grade)
+
+                # Đánh dấu là đã cập nhật ở lần reset này rồi
                 if resetTime:
                     updated = True   
         
@@ -292,10 +294,7 @@ def main():
     
     # runOnTransactions_v4(resetTimes)
     # runOnFavourite(RESET_TIME['Suarez'])
-    runOnFavourite()
-
-
-
+    runOnFavourite(RESET_TIME['Suarez'], autoCancel= True, grade= 4)
 
 
     # NEW TEMPLATE

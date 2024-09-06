@@ -96,7 +96,7 @@ RESET_TIME = {
     "Bergkamp": toResetTime("Chẵn 00-25"),
     "Illarramendi": toResetTime("Chẵn 00-25"),
     "Inaki": toResetTime("Chẵn 30-59"),
-    'Suarez': toResetTime("Chẵn 40 - Lẻ 15"),
+    'Suarez': toResetTime("Lẻ 40 - Chẵn 15"),
 
 }
 
