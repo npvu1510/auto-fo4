@@ -97,10 +97,14 @@ def waitingForModal(template, pos, appear = True, timeout = 2, threshold = 0.85,
     
 # ---------------------------------------------------------------- FAVORORITES FUNCTIONS ----------------------------------------------------------------
 def runOnFavourite(resetTimes = None, autoCancel = False , grades = None):
+    if autoCancel and len(resetTimes) > 1:
+        print('⚠️ Chức năng auto cancel phải được bật để có thể chèn nhiều hơn 1 cầu thủ !')
+        exit(1)
+
     prevPrice = currentPrice = updated = None
     failed = False
-
     playerIdx = 0
+
     # Khởi đầu với cầu thủ đầu tiên trong "DS yêu thích"
     single_click(TARGET_WINDOW, 406, 254)
     while True:
@@ -108,7 +112,7 @@ def runOnFavourite(resetTimes = None, autoCancel = False , grades = None):
         isFinishedOrder = checkNotification()
         if not isFinishedOrder:
             playerIdx+=1
-            
+
             if playerIdx == len(resetTimes):
                 os.system('shutdown -s')
 
@@ -118,8 +122,8 @@ def runOnFavourite(resetTimes = None, autoCancel = False , grades = None):
             failed = False
 
 
-        os.system('cls')
-        print(f"🔃 ĐANG CHÈN CẦU THỦ THỨ #{playerIdx}...")
+        # os.system('cls')
+        # print(f"🔃 ĐANG CHÈN CẦU THỦ THỨ #{playerIdx}...")
 
         # KIỂM TRA CÓ GẶP LỖI KHÔNG ?
         if not (compareImage(imageToArr(capture_window_region(TARGET_WINDOW, 782, 422, 118, 22)), SPAM_ERROR_1600_1900)):
@@ -148,7 +152,7 @@ def runOnFavourite(resetTimes = None, autoCancel = False , grades = None):
         
         # CLICK MỞ MODAL
         single_click(TARGET_WINDOW, 1110, 828)
-        currentPrice = waitingForModal(BUY_MODAL_1600_1900, [1239, 545, 37, 30])
+        currentPrice = waitingForModal(BUY_MODAL_1600_1900, [1278, 566, 25, 16])
         if not currentPrice:
             print('⏰ TIMEOUT KHI MỞ MODAL')
             # single_click(TARGET_WINDOW, 1214, 724)
@@ -157,6 +161,7 @@ def runOnFavourite(resetTimes = None, autoCancel = False , grades = None):
             continue
     
         # timing_capture([1239, 545, 37, 30])
+        # timing_capture([1278, 566, 25, 16])
         # return 
     
         # KIỂM TRA GIÁ
@@ -165,23 +170,25 @@ def runOnFavourite(resetTimes = None, autoCancel = False , grades = None):
             # saveImage(prevPrice, f'prevPrice_{time.time()}.png')
             # saveImage(currentPrice, f'currentPrice_{time.time()}.png')
             # print(f'Thay đổi' if isDiff else f'Không thay đổi')
-
             if isDiff:
-            # if True:
-                # Giá đã thay đổi
-                single_click(TARGET_WINDOW, 1284, 395)
-                single_click(TARGET_WINDOW, 1034, 725)
-                waitingForModal(BUY_MODAL_CLOSED_1600_1900,[523, 169, 23, 17], timeout=10)
-                time.sleep(3)
+                exit()
 
-                saveImage(capture_window(TARGET_WINDOW), f'updated_{time.time()}.png')
+            # if isDiff:
+            # # if True:
+            #     # Giá đã thay đổi
+            #     single_click(TARGET_WINDOW, 1284, 395)
+            #     single_click(TARGET_WINDOW, 1034, 725)
+            #     waitingForModal(BUY_MODAL_CLOSED_1600_1900,[523, 169, 23, 17], timeout=10)
+            #     time.sleep(3)
 
-                # Kiểm tra xem có tranh được slot 1 không ? Nếu không lát sẽ hủy, để có lại BP
-                failed = not checkingToCancelOrder(grades[playerIdx])
+            #     saveImage(capture_window(TARGET_WINDOW), f'updated_{time.time()}.png')
 
-                # Đánh dấu là đã cập nhật ở lần reset này rồi
-                if resetTimes[playerIdx]:
-                    updated = True   
+            #     # Kiểm tra xem có tranh được slot 1 không ? Nếu không lát sẽ hủy, để có lại BP
+            #     failed = not checkingToCancelOrder(grades[playerIdx])
+
+            #     # Đánh dấu là đã cập nhật ở lần reset này rồi
+            #     if resetTimes[playerIdx]:
+            #         updated = True   
         
         prevPrice = currentPrice
         
@@ -324,7 +331,7 @@ def main():
     
     # runOnTransactions_v4(resetTimes)
     # runOnFavourite(RESET_TIME['Suarez'])
-    runOnFavourite([RESET_TIME['Suarez'], False], grades= [4, 4], autoCancel= True, )
+    runOnFavourite([RESET_TIME['Suarez'], False], grades= [4,4], autoCancel= True)
 
 
     # NEW TEMPLATE

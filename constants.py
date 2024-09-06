@@ -23,7 +23,8 @@ HYPHEN_IMAGE = cv2.imread('./templates/hyphen.png')
 
 
 # 1600x900
-BUY_MODAL_1600_1900 = cv2.imread('./templates/1600x900/buy_modal_opened.png') 
+# BUY_MODAL_1600_1900 = cv2.imread('./templates/1600x900/buy_modal_opened.png') 
+BUY_MODAL_1600_1900 = cv2.imread('./templates/1600x900/175.png') 
 BUY_MODAL_CLOSED_1600_1900 = cv2.imread('./templates/1600x900/buy_modal_closed.png') 
 SPAM_ERROR_1600_1900 = cv2.imread('./templates/1600x900/spam_error.png')
 SLOT_1_1600_1900 = cv2.imread('./templates/1600x900/slot_1.png')
@@ -97,7 +98,7 @@ RESET_TIME = {
     "Bergkamp": toResetTime("Chẵn 00-25"),
     "Illarramendi": toResetTime("Chẵn 00-25"),
     "Inaki": toResetTime("Chẵn 30-59"),
-    'Suarez': toResetTime("Lẻ 40 - Chẵn 15"),
+    'Suarez': toResetTime("Chẵn 45 - Lẻ 20"),
 
 }
 
