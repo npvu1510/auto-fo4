@@ -1,7 +1,5 @@
 import os
 import time
-# import cv2
-# import playsound
 
 # my modules
 from constants import *
@@ -56,7 +54,6 @@ def isAvailableBuySlot():
     return res
 
 
-
 def isAvailableSellSlot():
     # click gia min nguoi ta dat
     single_click(TARGET_WINDOW, 619, 434)
@@ -77,89 +74,16 @@ def isAvailableSellSlot():
     res = compareImage(imageToArr(firstPic), imageToArr(secondPic), threshold=100)
     return res
 
-# ---------------------------------------------------------------- FAVORORITES FUNCTIONS ----------------------------------------------------------------
 
-def runOnFavourite(numRow=1):
-    prevPrice = None
-    currentPrice = None
-
-    currentRow = 0
-    while True:
-        if currentRow == numRow:
-            currentRow = 0
-        
-        # # Chuyển dòng
-        # single_click(TARGET_WINDOW,466, 250 + currentRow * 41,draw=f'position_{currentRow}.png')
-        # time.sleep(0.05)
-
-        # Chuyển tab cập nhật
-        single_click(TARGET_WINDOW,835, 179)
-        time.sleep(0.05)
-        single_click(TARGET_WINDOW,669, 178)
-        time.sleep(0.25)
-
-        # Làm gì đó.......
-        # Kiểm tra giá trị cầu thủ đã thay đổi chưa?
-
-        if prevPrice:
-            currentPrice = capture_window_region(TARGET_WINDOW, 897, 379, 101, 31)
-
-            start = time.time()
-            while not compareImage(imageToArr(currentPrice), PRICE_UPDATING_IMAGE, threshold=30, showDiff=False) and time.time() - start <= 5:
-                currentPrice = capture_window_region(TARGET_WINDOW, 897, 379, 101, 31)
-                # print("🔃 Đang cập nhật giá...")
-            
-            res = compareImage(imageToArr(prevPrice), imageToArr(currentPrice), threshold=30, showDiff=False)
-
-            print('Thay đổi' if res else 'Không thay đổi')
-            # if res:
-            #     return
-            time.sleep(1)
-            
-            # single_click(TARGET_WINDOW, 1100, 828)
-
-            # expandArrow = capture_window_region(TARGET_WINDOW, 536, 205, 26, 15)
-            # timeout = False
-            # start = time.time()
-            # while not compareImage(imageToArr(expandArrow), BUY_MODAL_BIGGER_IMAGE, threshold=80, showDiff=False):
-            #     if time.time() - start > 20:
-            #         timeout = True
-            #         break
-            #     expandArrow = capture_window_region(TARGET_WINDOW, 536, 205, 26, 15)
-            #     print("Chờ modal mở...")
-            # if timeout:
-            #     continue
-            # single_click(TARGET_WINDOW, 1253, 393)
-            # time.sleep(0.05)
-            # single_click(TARGET_WINDOW, 1033, 722)
-
-
-            # expandArrow = capture_window_region(TARGET_WINDOW, 536, 205, 26, 15)
-            # start = time.time()
-            # while compareImage(imageToArr(expandArrow), BUY_MODAL_BIGGER_IMAGE, threshold=80, showDiff=False):
-            #     if time.time() - start > 10:
-            #         single_click(TARGET_WINDOW, 1214, 725)
-            #         break
-
-            #     expandArrow = capture_window_region(TARGET_WINDOW, 536, 205, 26, 15)
-            #     print("Chờ modal đóng...")
-        
-        else:
-            currentPrice = capture_window_region(TARGET_WINDOW, 897, 379, 101, 31)
-
-
-        prevPrice = currentPrice
-
-# ---------------------------------------------------------------- TRANSACTION FUNCTIONS ----------------------------------------------------------------
-     
-def waitModal_v4(template, pos):
+def waitingForModal(template, pos, appear = True, timeout = 2, threshold = 0.85, showScore = False):
     currentImg = capture_window_region(TARGET_WINDOW, pos[0], pos[1], pos[2], pos[3])
     
     start = time.time()
-    while compareImage_v2(template, imageToArr(currentImg), threshold=0.95):
+    while (compareImage_v2(template, imageToArr(currentImg), threshold=threshold, showScore=showScore)
+           if appear else not compareImage_v2(template, imageToArr(currentImg), threshold=threshold, showScore=showScore)):
     # while compareImage(template, imageToArr(currentImg), threshold=30):
     
-        if time.time() - start >= 2:
+        if time.time() - start >= timeout:
             return False
             
         currentImg = capture_window_region(TARGET_WINDOW, pos[0], pos[1], pos[2], pos[3])
@@ -171,7 +95,102 @@ def waitModal_v4(template, pos):
 
     return maxPriceImage
     
-# buyModalImage_1600x900 = cv2.imread('./templates/1600x1900/163.png') 
+# ---------------------------------------------------------------- FAVORORITES FUNCTIONS ----------------------------------------------------------------
+def runOnFavourite(resetTime = False):
+    prevPrice = currentPrice = updated = None
+    failed = False
+
+    while True:
+        os.system('cls')
+
+        # KIỂM TRA CÓ GẶP LỖI KHÔNG ?
+        if not (compareImage(imageToArr(capture_window_region(TARGET_WINDOW, 782, 422, 118, 22)), SPAM_ERROR_1600_1900)):
+            single_click(TARGET_WINDOW, 902, 590)
+            time.sleep(300)
+            return
+        
+        # KIỂM TRA CÓ ĐANG TRONG GIỜ RESET KHÔNG ?
+        if resetTime:
+            message = time_until_reset(resetTime, offset=10)
+            if isinstance(message, str):
+                print(message)
+
+                updated = False
+                time.sleep(30)
+                continue
+            else:
+                if failed:
+                    cancelFirstOrder()
+                    failed = False
+
+         # KIỂM TRA ĐÃ CẬP NHẬT GIÁ Ở ĐỢT  NÀY CHƯA ?
+        if updated:
+            print("✅ GIÁ ĐÃ ĐƯỢC CẬP NHẬT")
+            continue
+        
+        # CLICK MỞ MODAL
+        single_click(TARGET_WINDOW, 1110, 828)
+        currentPrice = waitingForModal(BUY_MODAL_1600_1900, [1239, 545, 37, 30])
+        if not currentPrice:
+            print('⏰ TIMEOUT KHI MỞ MODAL')
+            # single_click(TARGET_WINDOW, 1214, 724)
+            send_key(TARGET_WINDOW, KEY_CODES['ESC'])
+            waitingForModal(BUY_MODAL_CLOSED_1600_1900,[523, 169, 23, 17])
+            continue
+    
+        # timing_capture([1239, 545, 37, 30])
+        # return 
+    
+        # KIỂM TRA GIÁ
+        if prevPrice:
+            isDiff = compareImage_v2(imageToArr(prevPrice), imageToArr(currentPrice), threshold=0.8, showScore=True)
+            # saveImage(prevPrice, f'prevPrice_{time.time()}.png')
+            # saveImage(currentPrice, f'currentPrice_{time.time()}.png')
+            # print(f'Thay đổi' if isDiff else f'Không thay đổi')
+
+            if isDiff:
+            # if True:
+                # Giá đã thay đổi
+                single_click(TARGET_WINDOW, 1284, 395)
+                single_click(TARGET_WINDOW, 1034, 725)
+                waitingForModal(BUY_MODAL_CLOSED_1600_1900,[523, 169, 23, 17], timeout=10)
+                time.sleep(3)
+
+                saveImage(capture_window(TARGET_WINDOW), f'updated_{time.time()}.png')
+
+                # Cập nhật biến
+                failed = not checkingToCancelOrder(1) 
+                if resetTime:
+                    updated = True   
+        
+        prevPrice = currentPrice
+        
+        # Tắt modal
+        # single_click(TARGET_WINDOW, 1214, 724)        
+        send_key(TARGET_WINDOW, KEY_CODES['ESC'])
+        waitingForModal(BUY_MODAL_CLOSED_1600_1900,[523, 169, 23, 17])
+
+def checkingToCancelOrder(grade = 1):
+    templateSlot = cv2.imread(f'./templates/1600x900/slot_1.png')
+
+    currentSlotImage = capture_window_region(TARGET_WINDOW, 1159, 464 + 34 * (grade - 1) - int(0.5 * grade), 22, 34)
+    saveImage(currentSlotImage, 'currentSlotImage.png')
+
+    return not compareImage_v2(templateSlot, imageToArr(currentSlotImage), threshold=0.75)
+
+def cancelFirstOrder():
+    single_click(TARGET_WINDOW, 828, 178)
+    time.sleep(0.5)
+    multi_click(1335, 256, rand_x=True)
+    time.sleep(0.5)
+    single_click(TARGET_WINDOW, 851, 622)
+    time.sleep(0.5)
+    send_key(TARGET_WINDOW, KEY_CODES['ESC'])
+    time.sleep(0.5)
+    single_click(TARGET_WINDOW, 665, 183)
+
+# ---------------------------------------------------------------- TRANSACTION FUNCTIONS ----------------------------------------------------------------
+
 
 def runOnTransactions_v4(resetTimes=[]):
     numRow = len(resetTimes)
@@ -223,7 +242,7 @@ def runOnTransactions_v4(resetTimes=[]):
         multi_click(1249, 258 + row * 52, 2, rand_x=True, rand_y=False)
 
         # Chờ Modal mở
-        currentPrice = waitModal_v4(BUY_MODAL_1600_1900, [1270, 536, 35, 44])
+        currentPrice = waitingForModal(BUY_MODAL_1600_1900, [1270, 536, 35, 44])
         if not currentPrice:
             single_click(TARGET_WINDOW, 1214, 724)
 
@@ -267,56 +286,34 @@ def runOnTransactions_v4(resetTimes=[]):
         time.sleep(0.25)
 
 
-a = 1.25
 def main():
-    # resetTimes = [RESET_TIME['Scamacca'], RESET_TIME['Correa'], RESET_TIME['Unal']]
-    # resetTimes = [RESET_TIME['Rowe'], RESET_TIME['Guedes'], RESET_TIME['Milik'], RESET_TIME['Correa'], RESET_TIME['Unal']]
-    # resetTimes = [RESET_TIME['Banega'], RESET_TIME['Nunes']]
-    # resetTimes = [RESET_TIME['Henry'], RESET_TIME['Bergkamp']]
-    resetTimes = [RESET_TIME['Illarramendi'], RESET_TIME['Banega']]
-
     # time.sleep(1800)
-    runOnTransactions_v4(resetTimes)
-
-    # waitModal_v4(BUY_MODAL_1600_1900, [1270, 536, 35, 44])    
-    # multi_click(1214, 724, 2)       
-    # # send_key(TARGET_WINDOW, KEY_CODES['ESC'])
-
-    # time.sleep(1)
-    # exit()
+    # resetTimes = [RESET_TIME['Banega'], RESET_TIME['Nunes']]
+    
+    # runOnTransactions_v4(resetTimes)
+    # runOnFavourite(RESET_TIME['Suarez'])
+    runOnFavourite()
 
 
-    # # img1 = cv2.imread('./129.png')
-    # # img2 = cv2.imread('./133.png')
-    # img1 = cv2.imread('./129_1.png')
-    # img2 = cv2.imread('./121.png')
-    # # # currentPrice = capture_window_region(TARGET_WINDOW, int(576 * a), int(ORDER_ROW_POS[0] * a) - 6, int(80 * a), int(16 * a))
 
-    # start = time.time()
-    # print(compareImage(imageToArr(img1), imageToArr(img2), threshold=60, showDiff=False))
 
-    # print(f'{time.time() - start}ms')
-
-    # start = time.time()
-    # print(compareImage_v2(imageToArr(img1), imageToArr(img2), threshold=0.8, showScore=True))
-    # print(f'{time.time() - start}ms')
- 
-    # start = time.time()
-    # print(compareImage_template(imageToArr(img1), imageToArr(img2), threshold=0.85))
-    # print(f'{time.time() - start}ms')
-
-    # for y in ORDER_ROW_POS:
-    #     # single_click(TARGET_WINDOW, int(576 * a), int(y * a), draw=f'row_{y}.png')
-    #     saveImage(capture_window_region(TARGET_WINDOW, int(576 * a), int(y * a) - 6, int(80 * a), int(16 * a)), f'row_{y}.png')
 
     # NEW TEMPLATE
     # captureTemplate([int(576 * a), int(ORDER_ROW_POS[0] * a) - 6, int(80 * a), int(16 * a)], 'hyphen.png')
     # captureTemplate([782, 422, 118, 22], 'spam_error.png')
+    # captureTemplate([1159, 464, 22, 34], 'slot_1.png')
 
     # TEST TEMPLATE
-    # testImage([782, 422, 118, 22], SPAM_ERROR_1600_1900)
-
+    # testImage([1159, 464 + 34 * (grade - 1) , 22, 34], GRADE_1_SLOT_1_1600_1900, threshold=0.7)
     
+
+    # res = checkingToCancelOrder(10)
+    # print('Đã chèn slot 1' if res else 'Không chèn được slot 1')
+    # if not res:
+    #     cancelFirstOrder()
+
+
+
 
 
 if __name__ == '__main__':

@@ -100,7 +100,7 @@ def time_until_reset(rst, offset=20):
         # Nếu target time là ngày hôm sau
         minutes_until_reset = (24 * 60 - current_time_in_minutes) + target_time_in_minutes
 
-    return f"Còn lại {minutes_until_reset} phút trước khi tới giờ reset."
+    return f"{minutes_until_reset} phút nữa tới giờ reset."
 
 
 

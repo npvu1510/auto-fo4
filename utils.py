@@ -90,15 +90,14 @@ def captureTemplate(position, templateName, subFolder="1600x900"):
     saveImage(template, f"./templates/{subFolder}/{templateName}")
 
 
-def testImage(position, template = None):
-    threshold = 50
+def testImage(position, template = None, compareByVersion2 = True, threshold = 0.85):
     prevImage = False
 
     while True:
         currentImage = capture_window_region(TARGET_WINDOW, position[0], position[1], position[2], position[3])
         # saveImage(currentImage, 'currentImage.png')
         if template.any():
-            isAppear = not compareImage(template, imageToArr(currentImage), threshold=threshold, showDiff=False)
+            isAppear = not compareImage(template, imageToArr(currentImage), threshold=threshold, showDiff=False) if not compareByVersion2 else not compareImage_v2(template, imageToArr(currentImage), threshold=threshold, showDiff=False)
             if isAppear:
                 print("Xuất hiện")
             else:
