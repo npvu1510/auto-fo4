@@ -96,12 +96,30 @@ def waitingForModal(template, pos, appear = True, timeout = 2, threshold = 0.85,
     return maxPriceImage
     
 # ---------------------------------------------------------------- FAVORORITES FUNCTIONS ----------------------------------------------------------------
-def runOnFavourite(resetTime = None, autoCancel = False , grade = 1):
+def runOnFavourite(resetTimes = None, autoCancel = False , grades = None):
     prevPrice = currentPrice = updated = None
     failed = False
 
+    playerIdx = 0
+    # Khởi đầu với cầu thủ đầu tiên trong "DS yêu thích"
+    single_click(TARGET_WINDOW, 406, 254)
     while True:
+        # KIỂM TRA CẦU THỦ ĐÃ VỀ HÀNG CHƯA ?
+        isFinishedOrder = checkNotification()
+        if not isFinishedOrder:
+            playerIdx+=1
+            
+            if playerIdx == len(resetTimes):
+                os.system('shutdown -s')
+
+            # Chuyển sang cầu thủ tiếp theo
+            single_click(TARGET_WINDOW, 406, 254 + playerIdx * 40)
+            prevPrice = currentPrice = updated = None
+            failed = False
+
+
         os.system('cls')
+        print(f"🔃 ĐANG CHÈN CẦU THỦ THỨ #{playerIdx}...")
 
         # KIỂM TRA CÓ GẶP LỖI KHÔNG ?
         if not (compareImage(imageToArr(capture_window_region(TARGET_WINDOW, 782, 422, 118, 22)), SPAM_ERROR_1600_1900)):
@@ -110,8 +128,8 @@ def runOnFavourite(resetTime = None, autoCancel = False , grade = 1):
             return
         
         # KIỂM TRA CÓ ĐANG TRONG GIỜ RESET KHÔNG ?
-        if resetTime:
-            message = time_until_reset(resetTime, offset=10)
+        if resetTimes[playerIdx]:
+            message = time_until_reset(resetTimes[playerIdx], offset=10)
             if isinstance(message, str):
                 print(f'⌚ {message}')
 
@@ -159,10 +177,10 @@ def runOnFavourite(resetTime = None, autoCancel = False , grade = 1):
                 saveImage(capture_window(TARGET_WINDOW), f'updated_{time.time()}.png')
 
                 # Kiểm tra xem có tranh được slot 1 không ? Nếu không lát sẽ hủy, để có lại BP
-                failed = not checkingToCancelOrder(grade)
+                failed = not checkingToCancelOrder(grades[playerIdx])
 
                 # Đánh dấu là đã cập nhật ở lần reset này rồi
-                if resetTime:
+                if resetTimes[playerIdx]:
                     updated = True   
         
         prevPrice = currentPrice
@@ -190,6 +208,18 @@ def cancelFirstOrder():
     send_key(TARGET_WINDOW, KEY_CODES['ESC'])
     time.sleep(0.5)
     single_click(TARGET_WINDOW, 665, 183)
+
+def checkNotification():
+    currentBadge = capture_window_region(TARGET_WINDOW, 785, 165, 11, 10)
+    res = compareImage_v2(BADGE_1600_1900, imageToArr(currentBadge))
+    if not res:
+        print('🎉 Cầu thủ đã về')
+        single_click(TARGET_WINDOW, 828, 178)
+        time.sleep(5)
+        single_click(TARGET_WINDOW, 665, 183)
+    
+    return res
+
 
 # ---------------------------------------------------------------- TRANSACTION FUNCTIONS ----------------------------------------------------------------
 
@@ -294,22 +324,24 @@ def main():
     
     # runOnTransactions_v4(resetTimes)
     # runOnFavourite(RESET_TIME['Suarez'])
-    runOnFavourite(RESET_TIME['Suarez'], autoCancel= True, grade= 4)
+    runOnFavourite([RESET_TIME['Suarez'], False], grades= [4, 4], autoCancel= True, )
 
 
     # NEW TEMPLATE
     # captureTemplate([int(576 * a), int(ORDER_ROW_POS[0] * a) - 6, int(80 * a), int(16 * a)], 'hyphen.png')
     # captureTemplate([782, 422, 118, 22], 'spam_error.png')
     # captureTemplate([1159, 464, 22, 34], 'slot_1.png')
+    # captureTemplate([785, 165, 11, 10], 'badge.png')
 
     # TEST TEMPLATE
-    # testImage([1159, 464 + 34 * (grade - 1) , 22, 34], GRADE_1_SLOT_1_1600_1900, threshold=0.7)
+    # testImage([785, 165, 11, 10], BADGE_1600_1900, threshold=0.7)
     
 
-    # res = checkingToCancelOrder(10)
+    # grade = 10
+    # res = checkingToCancelOrder(grade)
     # print('Đã chèn slot 1' if res else 'Không chèn được slot 1')
     # if not res:
-    #     cancelFirstOrder()
+        # cancelFirstOrder()
 
 
 
