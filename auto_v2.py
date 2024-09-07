@@ -105,6 +105,9 @@ def checkParamsFavorites(resetTimes, grades, quantities, autoCancel):
     
     playerLength = len(resetTimes)
 
+    if playerLength > 1 and not autoCancel:
+        raise ValueError("⚠️ Chèn nhiều hơn 2 thẻ lần lượt, yêu cầu phải bật auto cancel")
+
     if not quantities:
         quantities = [1] * playerLength
     else:
