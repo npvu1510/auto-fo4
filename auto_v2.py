@@ -105,12 +105,13 @@ def checkParamsFavorites(resetTimes, grades, quantities, autoCancel):
     
     playerLength = len(resetTimes)
 
-    if not autoCancel:
+    if autoCancel is None:
         raise ValueError("⚠️ Chưa chỉ định chế độ tự động hủy đặt thẻ")
     else:
-        for i in range(0, playerLength - 1):
-            if not resetTimes[i]:
-                raise ValueError(f"⚠️ Chế độ tự động hủy đặt thẻ yêu cầu các thẻ (trừ thẻ cuối) phải cung cấp giờ reset")
+        if autoCancel:
+            for i in range(0, playerLength - 1):
+                if not resetTimes[i]:
+                    raise ValueError(f"⚠️ Chế độ tự động hủy đặt thẻ yêu cầu các thẻ (trừ thẻ cuối) phải cung cấp giờ reset")
 
     if not quantities:
         quantities = [1] * playerLength
@@ -134,10 +135,10 @@ def checkParamsFavorites(resetTimes, grades, quantities, autoCancel):
     return grades, quantities
 
 
-def initFavorites(hasFailedFlag = False):
+def initFavorites(hasCancelFlag = False):
     prevPrice = currentPrice = updated = None
 
-    if not hasFailedFlag:
+    if not hasCancelFlag:
         return prevPrice, currentPrice, updated
     else:
         return prevPrice, currentPrice, updated, False
@@ -145,7 +146,7 @@ def initFavorites(hasFailedFlag = False):
 
 def runOnFavourites(resetTimes, grades = None, quantities = None, autoCancel = True):
     grades, quantities = checkParamsFavorites(resetTimes  , grades , quantities  , autoCancel)
-    prevPrice, currentPrice, updated, cancelfirstOrder = initFavorites(hasFailedFlag=True)
+    prevPrice, currentPrice, updated, cancelfirstOrder = initFavorites(hasCancelFlag=True)
 
     # # Khởi đầu với cầu thủ đầu tiên trong "DS yêu thích"
     # single_click(TARGET_WINDOW, 406, 254)
@@ -162,7 +163,7 @@ def runOnFavourites(resetTimes, grades = None, quantities = None, autoCancel = T
 
             # Chuyển sang cầu thủ tiếp theo
             single_click(TARGET_WINDOW, 406, 254 + playerIdx * 40)
-            prevPrice, currentPrice, updated, cancelfirstOrder = initFavorites(hasFailedFlag=True)
+            prevPrice, currentPrice, updated, cancelfirstOrder = initFavorites(hasCancelFlag=True)
             
 
         os.system('cls')
@@ -383,7 +384,7 @@ def main():
     # runOnTransactions_v4(resetTimes)
     # runOnFavourite(RESET_TIME['Suarez'])
     # runOnFavourite([RESET_TIME['Suarez'], False], grades= [4,4], autoCancel= True)
-    runOnFavourites([RESET_TIME['Suarez'], False], grades= [4,4])
+    runOnFavourites([False, False], grades= [4,4], autoCancel= False)
 
 
     # NEW TEMPLATE
