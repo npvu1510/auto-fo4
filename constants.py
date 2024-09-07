@@ -103,8 +103,9 @@ RESET_TIME = {
     "Bergkamp": toResetTime("Chẵn 00-25"),
     "Illarramendi": toResetTime("Chẵn 00-25"),
     "Inaki": toResetTime("Chẵn 30-59"),
-    'Suarez': toResetTime("Chẵn 45 - Lẻ 20"),
-
+    'Suarez': toResetTime("Lẻ 00 - Lẻ 25"),
+    "Vieira": toResetTime("Chẵn 15-35"),
+    "Xabi Alonso": toResetTime("Chẵn 29-49"),
 }
 
 

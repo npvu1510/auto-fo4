@@ -162,17 +162,18 @@ def buyOnFavorites(resetTimes, grades = None, quantities = None, autoCancel = Tr
     start = time.time()
     while True:
         # NẾU SĂN MỖI THẺ 1 CON ĐỂ BUILD ĐỘI HÌNH => KIỂM TRA VỀ HÀNG => CHUYỂN SANG CON TIẾP THEO
-        if isAllQuantitiesEqualOne: 
-            isFinishedOrder = checkNotification()
-            if not isFinishedOrder:
-                playerIdx+=1
+        if isAllQuantitiesEqualOne:
+            if autoCancel: 
+                isFinishedOrder = checkNotification()
+                if not isFinishedOrder:
+                    playerIdx+=1
 
-                if playerIdx == len(resetTimes):
-                    os.system('shutdown -s')
+                    if playerIdx == len(resetTimes):
+                        os.system('shutdown -s')
 
-                # Chuyển sang cầu thủ tiếp theo
-                single_click(TARGET_WINDOW, 406, 254 + playerIdx * 40)
-                prevPrice, currentPrice, updated, needToCancel = initFavorites(hasCancelFlag=True)
+                    # Chuyển sang cầu thủ tiếp theo
+                    single_click(TARGET_WINDOW, 406, 254 + playerIdx * 40)
+                    prevPrice, currentPrice, updated, needToCancel = initFavorites(hasCancelFlag=True)
             
 
         os.system('cls')
@@ -181,7 +182,7 @@ def buyOnFavorites(resetTimes, grades = None, quantities = None, autoCancel = Tr
         
         # NẾU CÓ RESET TIME => KIỂM TRA CÓ ĐANG TRONG GIỜ RESET KHÔNG ?
         if resetTimes and resetTimes[playerIdx]:
-            message = time_until_reset(resetTimes[playerIdx], offset=10)
+            message = time_until_reset(resetTimes[playerIdx], offset=5)
 
             # Ngoài giờ reset
             if isinstance(message, str):
@@ -343,7 +344,7 @@ def waitingForSellModal(template, pos, appear = True, timeout = 2, threshold = 0
         
 #         # KIỂM TRA CÓ ĐANG TRONG GIỜ RESET KHÔNG ?
 #         if resetTime:
-#             message = time_until_reset(resetTime, offset=10)
+#             message = time_until_reset(resetTime, offset=5)
 #             if isinstance(message, str):
 #                 print(f'⌚ {message}')
 
@@ -433,7 +434,7 @@ def runOnMyTransactions(resetTimes=[], intervalDelay= 180,delayDuration=30):
 
         # NẾU CÓ RESET TIME => KIỂM TRA CÓ ĐANG TRONG GIỜ RESET KHÔNG ?
         if resetTimes and resetTimes[row]:
-            message = time_until_reset(resetTimes[row], offset=10)
+            message = time_until_reset(resetTimes[row], offset=5)
 
             # Ngoài giờ reset
             if isinstance(message, str):
@@ -523,7 +524,8 @@ def main():
     # resetTimes = [RESET_TIME['Banega'], RESET_TIME['Nunes']]
     
     # runOnMyTransactions([False])
-    buyOnFavorites([False, False], grades= [4,4], autoCancel= False)
+    # buyOnFavorites([False, False], grades= [4,4], autoCancel= False)
+    buyOnFavorites([RESET_TIME['Vieira']], grades= [8], autoCancel= True)
 
 
     # NEW TEMPLATE
