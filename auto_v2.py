@@ -96,17 +96,61 @@ def waitingForModal(template, pos, appear = True, timeout = 2, threshold = 0.85,
     return maxPriceImage
     
 # ---------------------------------------------------------------- FAVORORITES FUNCTIONS ----------------------------------------------------------------
-def runOnFavourite(resetTimes = [False] , grades = [1], quantities = [1] , autoCancel = False):
-    if not autoCancel and len(resetTimes) > 1:
-        print('⚠️ Chức năng auto cancel phải được bật để có thể chèn nhiều hơn 1 cầu thủ !')
-        exit(1)
+def checkParamsFavorites(resetTimes, grades, quantities, autoCancel):
+    if not resetTimes:
+        raise ValueError("⚠️ Giờ reset của các thẻ không tồn tại")
 
+    if not type(resetTimes) == list:
+        raise TypeError("⚠️ Giờ reset các thẻ cần chèn phải là mảng")
+    
+    playerLength = len(resetTimes)
+
+    if not autoCancel:
+        raise ValueError("⚠️ Chưa chỉ định chế độ tự động hủy đặt thẻ")
+    else:
+        for i in range(0, playerLength - 1):
+            if not resetTimes[i]:
+                raise ValueError(f"⚠️ Chế độ tự động hủy đặt thẻ yêu cầu các thẻ (trừ thẻ cuối) phải cung cấp giờ reset")
+
+    if not quantities:
+        quantities = [1] * playerLength
+    else:
+        if not type(quantities) == list:
+            raise TypeError("⚠️ Số lượng cần chèn phải là mảng")
+        
+        if len(quantities)!= playerLength:
+            raise ValueError(f"⚠️ Có {playerLength} thẻ cần chèn, nhưng số lượng cần chèn là {len(quantities)}")
+    
+    if not grades:
+        grades = [1] * playerLength
+    else:
+        if not type(grades) == list:
+            raise TypeError("⚠️ Số lượng cộng các thẻ phải là mảng")
+        
+        if len(grades)!= playerLength:
+            raise ValueError(f"⚠️ Có {playerLength} thẻ cần chèn, nhưng số lượng cộng là {len(grades)}")
+    
+    
+    return grades, quantities
+
+
+def initFavorites(hasFailedFlag = False):
     prevPrice = currentPrice = updated = None
-    failed = False
-    playerIdx = 0
+
+    if not hasFailedFlag:
+        return prevPrice, currentPrice, updated
+    else:
+        return prevPrice, currentPrice, updated, False
+
+
+def runOnFavourites(resetTimes, grades = None, quantities = None, autoCancel = True):
+    grades, quantities = checkParamsFavorites(resetTimes  , grades , quantities  , autoCancel)
+    prevPrice, currentPrice, updated, cancelfirstOrder = initFavorites(hasFailedFlag=True)
 
     # # Khởi đầu với cầu thủ đầu tiên trong "DS yêu thích"
     # single_click(TARGET_WINDOW, 406, 254)
+
+    playerIdx = 0
     while True:
         # KIỂM TRA CẦU THỦ ĐÃ VỀ HÀNG CHƯA ?
         isFinishedOrder = checkNotification()
@@ -118,9 +162,8 @@ def runOnFavourite(resetTimes = [False] , grades = [1], quantities = [1] , autoC
 
             # Chuyển sang cầu thủ tiếp theo
             single_click(TARGET_WINDOW, 406, 254 + playerIdx * 40)
-            prevPrice = currentPrice = updated = None
-            failed = False
-
+            prevPrice, currentPrice, updated, cancelfirstOrder = initFavorites(hasFailedFlag=True)
+            
 
         os.system('cls')
         print(f"🔃 ĐANG CHÈN CẦU THỦ THỨ #{playerIdx + 1}...")
@@ -137,7 +180,8 @@ def runOnFavourite(resetTimes = [False] , grades = [1], quantities = [1] , autoC
             if isinstance(message, str):
                 print(f'⌚ {message}')
 
-                prevPrice = currentPrice = updated = None
+                prevPrice, currentPrice, updated = initFavorites()
+
                 time.sleep(30)
                 continue
 
@@ -147,8 +191,8 @@ def runOnFavourite(resetTimes = [False] , grades = [1], quantities = [1] , autoC
             print("✅ GIÁ ĐÃ ĐƯỢC CẬP NHẬT")
             continue
         else:
-            if failed:
-                failed = False
+            if cancelfirstOrder:
+                cancelfirstOrder = False
                 cancelFirstOrder()
         
 
@@ -183,14 +227,15 @@ def runOnFavourite(resetTimes = [False] , grades = [1], quantities = [1] , autoC
                     multi_click(1284, 551, quantities[playerIdx] - 1, rand_x=True)
 
                 single_click(TARGET_WINDOW, 1034, 725)
+
+                saveImage(capture_window(TARGET_WINDOW), f'before_{time.time()}.png')
                 waitingForModal(BUY_MODAL_CLOSED_1600_1900,[523, 169, 23, 17], timeout=10)
                 time.sleep(3)
-
-                saveImage(capture_window(TARGET_WINDOW), f'updated_{time.time()}.png')
+                saveImage(capture_window(TARGET_WINDOW), f'after_{time.time()}.png')
 
                 # Kiểm tra xem có tranh được slot 1 không ? Nếu không lát sẽ hủy, để có lại BP
                 if autoCancel:
-                    failed = not checkingToCancelOrder(grades[playerIdx])
+                    cancelfirstOrder = not checkingToCancelOrder(grades[playerIdx])
 
                 # Đánh dấu là đã cập nhật ở lần reset này rồi
                 if resetTimes[playerIdx]:
@@ -338,7 +383,7 @@ def main():
     # runOnTransactions_v4(resetTimes)
     # runOnFavourite(RESET_TIME['Suarez'])
     # runOnFavourite([RESET_TIME['Suarez'], False], grades= [4,4], autoCancel= True)
-    runOnFavourite(quantities=[1])
+    runOnFavourites([RESET_TIME['Suarez'], False], grades= [4,4])
 
 
     # NEW TEMPLATE
