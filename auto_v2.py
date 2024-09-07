@@ -137,19 +137,21 @@ def runOnFavourite(resetTimes = [False] , grades = [1], quantities = [1] , autoC
             if isinstance(message, str):
                 print(f'⌚ {message}')
 
-                updated = False
+                prevPrice = currentPrice = updated = None
                 time.sleep(30)
                 continue
-            else:
-                if autoCancel and failed:
-                    cancelFirstOrder()
-                    failed = False
+
 
          # KIỂM TRA ĐÃ CẬP NHẬT GIÁ Ở ĐỢT  NÀY CHƯA ?
         if updated:
             print("✅ GIÁ ĐÃ ĐƯỢC CẬP NHẬT")
             continue
+        else:
+            if failed:
+                failed = False
+                cancelFirstOrder()
         
+
         # CLICK MỞ MODAL
         single_click(TARGET_WINDOW, 1110, 828)
         currentPrice = waitingForModal(BUY_MODAL_1600_1900, [1278, 566, 25, 16])
@@ -187,7 +189,8 @@ def runOnFavourite(resetTimes = [False] , grades = [1], quantities = [1] , autoC
                 saveImage(capture_window(TARGET_WINDOW), f'updated_{time.time()}.png')
 
                 # Kiểm tra xem có tranh được slot 1 không ? Nếu không lát sẽ hủy, để có lại BP
-                failed = not checkingToCancelOrder(grades[playerIdx])
+                if autoCancel:
+                    failed = not checkingToCancelOrder(grades[playerIdx])
 
                 # Đánh dấu là đã cập nhật ở lần reset này rồi
                 if resetTimes[playerIdx]:
