@@ -23,13 +23,18 @@ HYPHEN_IMAGE = cv2.imread('./templates/hyphen.png')
 
 
 # 1600x900
+# open
 # BUY_MODAL_1600_1900 = cv2.imread('./templates/1600x900/buy_modal_opened.png') 
-BUY_MODAL_1600_1900 = cv2.imread('./templates/1600x900/175.png') 
-BUY_MODAL_CLOSED_1600_1900 = cv2.imread('./templates/1600x900/buy_modal_closed.png') 
+BUY_MODAL_1600_1900 = cv2.imread('./templates/1600x900/buy_modal_opened.png') 
+SELL_MODAL_OPENED_1600_1900 = cv2.imread('./templates/1600x900/sell_modal_opened.png') 
+
+# close
+MODAL_CLOSED_1600_1900 = cv2.imread('./templates/1600x900/modal_closed.png') 
+
+
 SPAM_ERROR_1600_1900 = cv2.imread('./templates/1600x900/spam_error.png')
 SLOT_1_1600_1900 = cv2.imread('./templates/1600x900/slot_1.png')
 BADGE_1600_1900 = cv2.imread('./templates/1600x900/badge.png')
-
 
 
 HYPHEN_BIGGER_IMAGE = cv2.imread('./templates/1600x900/hyphen.png')
