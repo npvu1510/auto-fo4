@@ -178,11 +178,6 @@ def runOnFavourites(resetTimes, grades = None, quantities = None, autoCancel = T
         os.system('cls')
         print(f"🔃 ĐANG CHÈN CẦU THỦ THỨ #{playerIdx + 1}...")
 
-        # KIỂM TRA CÓ GẶP LỖI KHÔNG ?
-        if not (compareImage(imageToArr(capture_window_region(TARGET_WINDOW, 782, 422, 118, 22)), SPAM_ERROR_1600_1900)):
-            single_click(TARGET_WINDOW, 902, 590)
-            time.sleep(300)
-            return
         
         # KIỂM TRA CÓ ĐANG TRONG GIỜ RESET KHÔNG ?
         if resetTimes[playerIdx]:
@@ -206,14 +201,22 @@ def runOnFavourites(resetTimes, grades = None, quantities = None, autoCancel = T
                 cancelFirstOrder()
         
 
-        # CLICK MỞ MODAL
+        # CLICK MỞ MODAL 
         single_click(TARGET_WINDOW, 1110, 828)
         currentPrice = waitingForModal(BUY_MODAL_1600_1900, [1278, 566, 25, 16])
         if not currentPrice:
-            print('⏰ TIMEOUT KHI MỞ MODAL')
-            # single_click(TARGET_WINDOW, 1214, 724)
-            send_key(TARGET_WINDOW, KEY_CODES['ESC'])
-            waitingForModal(BUY_MODAL_CLOSED_1600_1900,[523, 169, 23, 17])
+            # KIỂM TRA CÓ GẶP LỖI KHÔNG ?
+            if not (compareImage_v2(imageToArr(capture_window_region(TARGET_WINDOW, 782, 422, 118, 22)), SPAM_ERROR_1600_1900, threshold=0.3 , showScore=True)):
+                single_click(TARGET_WINDOW, 902, 590)
+                print("⌚ ĐANG GẶP LỖI SPAM CHỜ 60 GIÂY...")
+                time.sleep(60)
+                
+            # KHÔNG GẶP LỖI => TIMEOUT
+            else:
+                print('⏰ TIMEOUT KHI MỞ MODAL')
+                # single_click(TARGET_WINDOW, 1214, 724)
+                send_key(TARGET_WINDOW, KEY_CODES['ESC'])
+                waitingForModal(BUY_MODAL_CLOSED_1600_1900,[523, 169, 23, 17])
             continue
     
         # timing_capture([1239, 545, 37, 30])
@@ -290,9 +293,7 @@ def checkNotification():
 
 
 # ---------------------------------------------------------------- TRANSACTION FUNCTIONS ----------------------------------------------------------------
-
-
-def runOnTransactions_v4(resetTimes=[]):
+def runOnMyTransactions(resetTimes=[]):
     numRow = len(resetTimes)
 
     prevPrice = [None] * numRow
@@ -312,12 +313,6 @@ def runOnTransactions_v4(resetTimes=[]):
         os.system('cls')
         print(f"👉 Dòng {row + 1}")
 
-        # KIỂM TRA CÓ GẶP LỖI KHÔNG ?
-        if not (compareImage(imageToArr(capture_window_region(TARGET_WINDOW, 782, 422, 118, 22)), SPAM_ERROR_1600_1900)):
-            single_click(TARGET_WINDOW, 902, 590)
-            time.sleep(300)
-            return
-
         # KIỂM TRA CÓ ĐANG TRONG GIỜ RESET KHÔNG ?
         if resetTimes[row]:
             message = time_until_reset(resetTimes[row], offset=10)
@@ -336,17 +331,27 @@ def runOnTransactions_v4(resetTimes=[]):
             row = row + 1 if row < numRow - 1 else 0
             continue
 
-
         # Click vào row
-        # single_click(TARGET_WINDOW, 1249, 258 + row * 52, draw=f'row_{row}.png')
         multi_click(1249, 258 + row * 52, 2, rand_x=True, rand_y=False)
 
         # Chờ Modal mở
-        currentPrice = waitingForModal(BUY_MODAL_1600_1900, [1270, 536, 35, 44])
+        currentPrice = waitingForModal(BUY_MODAL_1600_1900, [1278, 566, 25, 16])
         if not currentPrice:
-            single_click(TARGET_WINDOW, 1214, 724)
+            # KIỂM TRA CÓ GẶP LỖI KHÔNG ?
+            if not (compareImage_v2(imageToArr(capture_window_region(TARGET_WINDOW, 782, 422, 118, 22)), SPAM_ERROR_1600_1900, threshold=0.3 , showScore=True)):
+                print("⌚ ĐANG GẶP LỖI SPAM CHỜ 60 GIÂY...")
+                time.sleep(300)
+                
+                # single_click(TARGET_WINDOW, 902, 590)
+                send_key(TARGET_WINDOW, KEY_CODES['ESC'])
 
-            time.sleep(0.25)
+                
+            # KHÔNG GẶP LỖI => TIMEOUT
+            else:
+                print('⏰ TIMEOUT KHI MỞ MODAL')
+                # single_click(TARGET_WINDOW, 1214, 724)
+                send_key(TARGET_WINDOW, KEY_CODES['ESC'])
+                waitingForModal(BUY_MODAL_CLOSED_1600_1900,[523, 169, 23, 17])
             continue
 
         # timing_capture([1270, 536, 35, 44])
@@ -354,18 +359,17 @@ def runOnTransactions_v4(resetTimes=[]):
 
         # testRow = row + 1 if row + 1 < numRow else 0
         if prevPrice[row]:
-            isDiff = compareImage_v2(imageToArr(prevPrice[row]), imageToArr(currentPrice), threshold=0.95, showScore=True)
+            isDiff = compareImage_v2(imageToArr(prevPrice[row]), imageToArr(currentPrice), threshold=0.8, showScore=True)
             # print(f'{row+1}: Thay đổi' if isDiff else f'{row+1}: Không thay đổi')
 
             # Giá đã thay đổi
             if  isDiff:                
                 single_click(TARGET_WINDOW, 1284, 395)
-                time.sleep(0.01)
                 single_click(TARGET_WINDOW, 1034, 725)
-                saveImage(capture_window(TARGET_WINDOW), f'updated_{time.time()}.png')
-                time.sleep(0.1)
 
-                send_key(TARGET_WINDOW, KEY_CODES['ESC'])
+                time.sleep(0.1)
+                saveImage(capture_window(TARGET_WINDOW), f'updated_{time.time()}.png')
+                waitingForModal(BUY_MODAL_CLOSED_1600_1900,[523, 169, 23, 17])
 
                 updated[row] = True
                 
@@ -373,27 +377,29 @@ def runOnTransactions_v4(resetTimes=[]):
                 # FOR DEBUGGING
                 saveImage(prevPrice[row], f'prevPrice_{row}_{time.time()}.png')
                 saveImage(currentPrice, f'currentPrice_{time.time()}.png')
-                # return 
+
                 time.sleep(2)
                 pass
         
         prevPrice[row] = currentPrice
         
         # Tắt modal
-        single_click(TARGET_WINDOW, 1214, 724)           
+        # single_click(TARGET_WINDOW, 1214, 724)           
+        send_key(TARGET_WINDOW, KEY_CODES['ESC'])
+        waitingForModal(BUY_MODAL_CLOSED_1600_1900,[523, 169, 23, 17])
 
         row = row + 1 if row < numRow - 1 else 0
-        time.sleep(0.25)
+
 
 
 def main():
     # time.sleep(1800)
     # resetTimes = [RESET_TIME['Banega'], RESET_TIME['Nunes']]
     
-    # runOnTransactions_v4(resetTimes)
+    runOnMyTransactions([False])
     # runOnFavourite(RESET_TIME['Suarez'])
     # runOnFavourite([RESET_TIME['Suarez'], False], grades= [4,4], autoCancel= True)
-    runOnFavourites([False, False], grades= [4,4], autoCancel= False)
+    # runOnFavourites([False, False], grades= [4,4], autoCancel= False)
 
 
     # NEW TEMPLATE
