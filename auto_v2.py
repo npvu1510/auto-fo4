@@ -151,7 +151,7 @@ def initFavorites(hasCancelFlag = False):
     else:
         return prevPrice, currentPrice, updated, False
 
-def buyOnFavorites(resetTimes, grades = None, quantities = None, autoCancel = True, intervalDelay= 300,delayDuration = 30):
+def buyOnFavorites(resetTimes, grades = None, quantities = None, autoCancel = True, intervalDelay= 180,delayDuration = 30):
     grades, quantities, isAllQuantitiesEqualOne = checkParamsFavorites(resetTimes  , grades , quantities  , autoCancel)
     prevPrice, currentPrice, updated, needToCancel = initFavorites(hasCancelFlag=True)
 
@@ -161,7 +161,6 @@ def buyOnFavorites(resetTimes, grades = None, quantities = None, autoCancel = Tr
     playerIdx = 0
     start = time.time()
     while True:
-        
         # NẾU SĂN MỖI THẺ 1 CON ĐỂ BUILD ĐỘI HÌNH => KIỂM TRA VỀ HÀNG => CHUYỂN SANG CON TIẾP THEO
         if isAllQuantitiesEqualOne: 
             isFinishedOrder = checkNotification()
@@ -189,7 +188,8 @@ def buyOnFavorites(resetTimes, grades = None, quantities = None, autoCancel = Tr
                 print(f'⌚ {message}')
 
                 prevPrice, currentPrice, updated = initFavorites()
-
+                
+                # Tạm dừng hạn chế chạy quá nhiều
                 time.sleep(30)
                 continue
             
@@ -209,7 +209,6 @@ def buyOnFavorites(resetTimes, grades = None, quantities = None, autoCancel = Tr
             needToCancel = False
             cancelFirstOrder()
         
-
         # CLICK MỞ MODAL 
         single_click(TARGET_WINDOW, 1110, 828)
         currentPrice = waitingForBuyModal(BUY_MODAL_1600_1900, [1278, 566, 25, 16])
@@ -217,13 +216,13 @@ def buyOnFavorites(resetTimes, grades = None, quantities = None, autoCancel = Tr
         # Nếu modal chưa mở => có thể do lỗi spam hoặc timeout
         if not currentPrice:
             # Kiểm tra lỗi spam
-            if not (compareImage_v2(imageToArr(capture_window_region(TARGET_WINDOW, 782, 422, 118, 22)), SPAM_ERROR_1600_1900, threshold=0.7, showScore=True)):
+            if not (compareImage_v2(imageToArr(capture_window_region(TARGET_WINDOW, 782, 422, 118, 22)), SPAM_ERROR_1600_1900, threshold=0.8, showScore=True)):
                 # single_click(TARGET_WINDOW, 902, 590)
-                print("⌚ ĐANG GẶP LỖI SPAM CHỜ 60 GIÂY...")
-                time.sleep(300)
+                print("⌚ ĐANG GẶP LỖI SPAM CHỜ 10 PHÚT...")
+                time.sleep(600)
 
                 send_key(TARGET_WINDOW, KEY_CODES['ESC'])
-                time.sleep(0.2)
+                time.sleep(2)
                 
             # Kiểm tra lỗi timeout
             else:
@@ -417,16 +416,16 @@ def waitingForSellModal(template, pos, appear = True, timeout = 2, threshold = 0
 
 
 # ---------------------------------------------------------------- TRANSACTION FUNCTIONS ----------------------------------------------------------------
-def runOnMyTransactions(resetTimes=[], intervalDelay= 300,delayDuration=30):
+def runOnMyTransactions(resetTimes=[], intervalDelay= 180,delayDuration=30):
     numRow = len(resetTimes)
 
     prevPrice = [None] * numRow
-    currentPrice = None
-
     updated = [False] * numRow
 
-    row = 0
+
+    currentPrice = None
     start = time.time()
+    row = 0
     while True:
         # KHỞI ĐẦU MỖI DÒNG
         os.system('cls')
@@ -524,8 +523,6 @@ def main():
     # resetTimes = [RESET_TIME['Banega'], RESET_TIME['Nunes']]
     
     # runOnMyTransactions([False])
-    # runOnFavourite(RESET_TIME['Suarez'])
-    # runOnFavourite([RESET_TIME['Suarez'], False], grades= [4,4], autoCancel= True)
     buyOnFavorites([False, False], grades= [4,4], autoCancel= False)
 
 
@@ -538,15 +535,6 @@ def main():
     # TEST TEMPLATE
     # testImage([785, 165, 11, 10], BADGE_1600_1900, threshold=0.7)
     
-
-    # grade = 10
-    # res = checkingToCancelOrder(grade)
-    # print('Đã chèn slot 1' if res else 'Không chèn được slot 1')
-    # if not res:
-        # cancelFirstOrder()
-
-
-
 
 
 if __name__ == '__main__':
