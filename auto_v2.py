@@ -105,14 +105,6 @@ def checkParamsFavorites(resetTimes, grades, quantities, autoCancel):
     
     playerLength = len(resetTimes)
 
-    if autoCancel is None:
-        raise ValueError("⚠️ Chưa chỉ định chế độ tự động hủy đặt thẻ")
-    else:
-        if autoCancel:
-            for i in range(0, playerLength - 1):
-                if not resetTimes[i]:
-                    raise ValueError(f"⚠️ Chế độ tự động hủy đặt thẻ yêu cầu các thẻ (trừ thẻ cuối) phải cung cấp giờ reset")
-
     if not quantities:
         quantities = [1] * playerLength
     else:
@@ -121,6 +113,23 @@ def checkParamsFavorites(resetTimes, grades, quantities, autoCancel):
         
         if len(quantities)!= playerLength:
             raise ValueError(f"⚠️ Có {playerLength} thẻ cần chèn, nhưng số lượng cần chèn là {len(quantities)}")
+        
+
+    isAllQuantitiesEqualOne = False
+    if autoCancel is None:
+        raise ValueError("⚠️ Chưa chỉ định chế độ tự động hủy đặt thẻ")
+    else:
+        if autoCancel:
+            for i in range(0, playerLength - 1):
+                if not resetTimes[i]:
+                    raise ValueError(f"⚠️ Chế độ auto cancel yêu cầu các thẻ (trừ thẻ cuối) phải cung cấp giờ reset")
+            
+            if playerLength > 1:
+                for i in range(0, playerLength - 1):
+                    if quantities[i] > 1:
+                        raise ValueError(f"⚠️ Chế độ auto cancel yêu cầu các thẻ (trừ thẻ cuối) chỉ mua số lượng là 1 hoặc chỉ được chèn duy nhất 1 thẻ !")
+                isAllQuantitiesEqualOne = True
+                
     
     if not grades:
         grades = [1] * playerLength
@@ -132,8 +141,7 @@ def checkParamsFavorites(resetTimes, grades, quantities, autoCancel):
             raise ValueError(f"⚠️ Có {playerLength} thẻ cần chèn, nhưng số lượng cộng là {len(grades)}")
     
     
-    return grades, quantities
-
+    return grades, quantities, isAllQuantitiesEqualOne
 
 def initFavorites(hasCancelFlag = False):
     prevPrice = currentPrice = updated = None
@@ -143,9 +151,8 @@ def initFavorites(hasCancelFlag = False):
     else:
         return prevPrice, currentPrice, updated, False
 
-
 def runOnFavourites(resetTimes, grades = None, quantities = None, autoCancel = True):
-    grades, quantities = checkParamsFavorites(resetTimes  , grades , quantities  , autoCancel)
+    grades, quantities, isAllQuantitiesEqualOne = checkParamsFavorites(resetTimes  , grades , quantities  , autoCancel)
     prevPrice, currentPrice, updated, cancelfirstOrder = initFavorites(hasCancelFlag=True)
 
     # # Khởi đầu với cầu thủ đầu tiên trong "DS yêu thích"
@@ -154,16 +161,18 @@ def runOnFavourites(resetTimes, grades = None, quantities = None, autoCancel = T
     playerIdx = 0
     while True:
         # KIỂM TRA CẦU THỦ ĐÃ VỀ HÀNG CHƯA ?
-        isFinishedOrder = checkNotification()
-        if not isFinishedOrder:
-            playerIdx+=1
+        if autoCancel:
+            if len(quantities) == 1 or (len(quantities) > 1 and isAllQuantitiesEqualOne): 
+                isFinishedOrder = checkNotification()
+                if not isFinishedOrder:
+                    playerIdx+=1
 
-            if playerIdx == len(resetTimes):
-                os.system('shutdown -s')
+                    if playerIdx == len(resetTimes):
+                        os.system('shutdown -s')
 
-            # Chuyển sang cầu thủ tiếp theo
-            single_click(TARGET_WINDOW, 406, 254 + playerIdx * 40)
-            prevPrice, currentPrice, updated, cancelfirstOrder = initFavorites(hasCancelFlag=True)
+                    # Chuyển sang cầu thủ tiếp theo
+                    single_click(TARGET_WINDOW, 406, 254 + playerIdx * 40)
+                    prevPrice, currentPrice, updated, cancelfirstOrder = initFavorites(hasCancelFlag=True)
             
 
         os.system('cls')
