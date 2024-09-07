@@ -151,9 +151,9 @@ def initFavorites(hasCancelFlag = False):
     else:
         return prevPrice, currentPrice, updated, False
 
-def buyOnFavorites(resetTimes, grades = None, quantities = None, autoCancel = True, delayDuration = 30):
+def buyOnFavorites(resetTimes, grades = None, quantities = None, autoCancel = True, intervalDelay= 300,delayDuration = 30):
     grades, quantities, isAllQuantitiesEqualOne = checkParamsFavorites(resetTimes  , grades , quantities  , autoCancel)
-    prevPrice, currentPrice, updated, cancelfirstOrder = initFavorites(hasCancelFlag=True)
+    prevPrice, currentPrice, updated, needToCancel = initFavorites(hasCancelFlag=True)
 
     # # Khởi đầu với cầu thủ đầu tiên trong "DS yêu thích"
     # single_click(TARGET_WINDOW, 406, 254)
@@ -161,28 +161,30 @@ def buyOnFavorites(resetTimes, grades = None, quantities = None, autoCancel = Tr
     playerIdx = 0
     start = time.time()
     while True:
-        # KIỂM TRA CẦU THỦ ĐÃ VỀ HÀNG CHƯA ?
-        if autoCancel:
-            if len(quantities) == 1 or (len(quantities) > 1 and isAllQuantitiesEqualOne): 
-                isFinishedOrder = checkNotification()
-                if not isFinishedOrder:
-                    playerIdx+=1
+        
+        # NẾU SĂN MỖI THẺ 1 CON ĐỂ BUILD ĐỘI HÌNH => KIỂM TRA VỀ HÀNG => CHUYỂN SANG CON TIẾP THEO
+        if isAllQuantitiesEqualOne: 
+            isFinishedOrder = checkNotification()
+            if not isFinishedOrder:
+                playerIdx+=1
 
-                    if playerIdx == len(resetTimes):
-                        os.system('shutdown -s')
+                if playerIdx == len(resetTimes):
+                    os.system('shutdown -s')
 
-                    # Chuyển sang cầu thủ tiếp theo
-                    single_click(TARGET_WINDOW, 406, 254 + playerIdx * 40)
-                    prevPrice, currentPrice, updated, cancelfirstOrder = initFavorites(hasCancelFlag=True)
+                # Chuyển sang cầu thủ tiếp theo
+                single_click(TARGET_WINDOW, 406, 254 + playerIdx * 40)
+                prevPrice, currentPrice, updated, needToCancel = initFavorites(hasCancelFlag=True)
             
 
         os.system('cls')
         print(f"🔃 ĐANG CHÈN CẦU THỦ THỨ #{playerIdx + 1}...")
 
         
-        # KIỂM TRA CÓ ĐANG TRONG GIỜ RESET KHÔNG ?
-        if resetTimes[playerIdx]:
+        # NẾU CÓ RESET TIME => KIỂM TRA CÓ ĐANG TRONG GIỜ RESET KHÔNG ?
+        if resetTimes and resetTimes[playerIdx]:
             message = time_until_reset(resetTimes[playerIdx], offset=10)
+
+            # Ngoài giờ reset
             if isinstance(message, str):
                 print(f'⌚ {message}')
 
@@ -190,27 +192,31 @@ def buyOnFavorites(resetTimes, grades = None, quantities = None, autoCancel = Tr
 
                 time.sleep(30)
                 continue
+            
+            # Trong giờ reset và cập nhật trong đợt này rồi
+            if updated:
+                print("✅ GIÁ ĐÃ ĐƯỢC CẬP NHẬT")
+                continue
+        
+        # NẾU KHÔNG CÓ RESET TIME => DELAY SAU MỘT KHOẢNG => TRÁNH SPAM
         else:
-            if time.time() - start >= 300:
+            if time.time() - start >= intervalDelay:
                 time.sleep(delayDuration)
                 start = time.time()
 
-
-         # KIỂM TRA ĐÃ CẬP NHẬT GIÁ Ở ĐỢT  NÀY CHƯA ?
-        if updated:
-            print("✅ GIÁ ĐÃ ĐƯỢC CẬP NHẬT")
-            continue
-        else:
-            if cancelfirstOrder:
-                cancelfirstOrder = False
-                cancelFirstOrder()
+         # NẾU CÓ BẬT AUTO CANCEL VÀ CÓ CỜ CANCEL (CHỈ TỒN TẠI KHI ĐÃ CẬP NHẬT)
+        if autoCancel and needToCancel:
+            needToCancel = False
+            cancelFirstOrder()
         
 
         # CLICK MỞ MODAL 
         single_click(TARGET_WINDOW, 1110, 828)
         currentPrice = waitingForBuyModal(BUY_MODAL_1600_1900, [1278, 566, 25, 16])
+
+        # Nếu modal chưa mở => có thể do lỗi spam hoặc timeout
         if not currentPrice:
-            # KIỂM TRA CÓ GẶP LỖI KHÔNG ?
+            # Kiểm tra lỗi spam
             if not (compareImage_v2(imageToArr(capture_window_region(TARGET_WINDOW, 782, 422, 118, 22)), SPAM_ERROR_1600_1900, threshold=0.7, showScore=True)):
                 # single_click(TARGET_WINDOW, 902, 590)
                 print("⌚ ĐANG GẶP LỖI SPAM CHỜ 60 GIÂY...")
@@ -219,7 +225,7 @@ def buyOnFavorites(resetTimes, grades = None, quantities = None, autoCancel = Tr
                 send_key(TARGET_WINDOW, KEY_CODES['ESC'])
                 time.sleep(0.2)
                 
-            # KHÔNG GẶP LỖI => TIMEOUT
+            # Kiểm tra lỗi timeout
             else:
                 print('⏰ TIMEOUT KHI MỞ MODAL')
                 # single_click(TARGET_WINDOW, 1214, 724)
@@ -231,22 +237,25 @@ def buyOnFavorites(resetTimes, grades = None, quantities = None, autoCancel = Tr
         # timing_capture([1278, 566, 25, 16])
         # return 
     
-        # KIỂM TRA GIÁ
+        # KIỂM TRA THÔNG TIN MODAL (GIÁ)
         if prevPrice:
             isDiff = compareImage_v2(imageToArr(prevPrice), imageToArr(currentPrice), threshold=0.8, showScore=True)
             # saveImage(prevPrice, f'prevPrice_{time.time()}.png')
             # saveImage(currentPrice, f'currentPrice_{time.time()}.png')
             # print(f'Thay đổi' if isDiff else f'Không thay đổi')
 
+            # Giá đã thay đổi
             if isDiff:
             # if True:
-                # Giá đã thay đổi
+                # Chọn giá
                 single_click(TARGET_WINDOW, 1284, 395)
-                single_click(TARGET_WINDOW, 1245, 556)
+                # single_click(TARGET_WINDOW, 1245, 556)
                 
+                # Nếu mua nhiều
                 if quantities[playerIdx] - 1 > 0:
                     multi_click(1284, 551, quantities[playerIdx] - 1, rand_x=True)
-
+                
+                # Bấm mua
                 single_click(TARGET_WINDOW, 1034, 725)
 
                 saveImage(capture_window(TARGET_WINDOW), f'before_{time.time()}.png')
@@ -254,13 +263,14 @@ def buyOnFavorites(resetTimes, grades = None, quantities = None, autoCancel = Tr
                 time.sleep(3)
                 saveImage(capture_window(TARGET_WINDOW), f'after_{time.time()}.png')
 
-                # Kiểm tra xem có tranh được slot 1 không ? Nếu không lát sẽ hủy, để có lại BP
-                if autoCancel:
-                    cancelfirstOrder = not checkingToCancelOrder(grades[playerIdx])
 
-                # Đánh dấu là đã cập nhật ở lần reset này rồi
+                # Nếu có reset time => đánh dấu đã cập nhật trong lần này
                 if resetTimes[playerIdx]:
-                    updated = True   
+                    updated = True  
+
+                # nếu có auto cancel => kiểm tra có cần phải cancel order trong lần reset kế hay không ?
+                if autoCancel:
+                    needToCancel = not checkingToCancelOrder(grades[playerIdx])
         
         prevPrice = currentPrice
         
@@ -407,7 +417,7 @@ def waitingForSellModal(template, pos, appear = True, timeout = 2, threshold = 0
 
 
 # ---------------------------------------------------------------- TRANSACTION FUNCTIONS ----------------------------------------------------------------
-def runOnMyTransactions(resetTimes=[]):
+def runOnMyTransactions(resetTimes=[], intervalDelay= 300,delayDuration=30):
     numRow = len(resetTimes)
 
     prevPrice = [None] * numRow
@@ -416,34 +426,37 @@ def runOnMyTransactions(resetTimes=[]):
     updated = [False] * numRow
 
     row = 0
-    # startCountdown = time.time()
+    start = time.time()
     while True:
-        # if time.time() - startCountdown >= 300:
-        #     print("Đang tạm dừng tránh spam...")
-        #     time.sleep(30)
-        #     startCountdown = time.time()
-
         # KHỞI ĐẦU MỖI DÒNG
         os.system('cls')
         print(f"👉 Dòng {row + 1}")
 
-        # KIỂM TRA CÓ ĐANG TRONG GIỜ RESET KHÔNG ?
-        if resetTimes[row]:
+        # NẾU CÓ RESET TIME => KIỂM TRA CÓ ĐANG TRONG GIỜ RESET KHÔNG ?
+        if resetTimes and resetTimes[row]:
             message = time_until_reset(resetTimes[row], offset=10)
-            if isinstance(message, str):
-                print(message)
 
-                updated[row] = False
-                
+            # Ngoài giờ reset
+            if isinstance(message, str):
+                print(f'⌚ {message}')
+
+                prevPrice, currentPrice, updated = initFavorites()
+
                 row = row + 1 if row < numRow - 1 else 0
                 continue
+            
+            # Trong giờ reset và cập nhật trong đợt này rồi
+            if updated:
+                print("✅ GIÁ ĐÃ ĐƯỢC CẬP NHẬT")
 
-        # KIỂM TRA ĐÃ CẬP NHẬT GIÁ Ở ĐỢT RESET NÀY CHƯA ?
-        if resetTimes[row] and updated[row]:
-            print("Giá đã được cập nhật rồi")
-
-            row = row + 1 if row < numRow - 1 else 0
-            continue
+                row = row + 1 if row < numRow - 1 else 0
+                continue
+        
+        # NẾU KHÔNG CÓ RESET TIME => DELAY SAU MỘT KHOẢNG => TRÁNH SPAM
+        else:
+            if time.time() - start >= intervalDelay:
+                time.sleep(delayDuration)
+                start = time.time()
 
         # Click vào row
         multi_click(1249, 258 + row * 52, 2, rand_x=True, rand_y=False)
@@ -483,17 +496,17 @@ def runOnMyTransactions(resetTimes=[]):
 
                 time.sleep(0.1)
                 saveImage(capture_window(TARGET_WINDOW), f'updated_{time.time()}.png')
-                waitingForBuyModal(MODAL_CLOSED_1600_1900,[523, 169, 23, 17])
-
-                updated[row] = True
-                
+                waitingForBuyModal(MODAL_CLOSED_1600_1900,[523, 169, 23, 17])                
 
                 # FOR DEBUGGING
                 saveImage(prevPrice[row], f'prevPrice_{row}_{time.time()}.png')
                 saveImage(currentPrice, f'currentPrice_{time.time()}.png')
-
+                
                 time.sleep(2)
-                pass
+
+                
+                updated[row] = True
+
         
         prevPrice[row] = currentPrice
         
