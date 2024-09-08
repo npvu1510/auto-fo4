@@ -23,12 +23,9 @@ HYPHEN_IMAGE = cv2.imread('./templates/hyphen.png')
 
 
 # 1600x900
-# open
 # BUY_MODAL_1600_1900 = cv2.imread('./templates/1600x900/buy_modal_opened.png') 
-BUY_MODAL_1600_1900 = cv2.imread('./templates/1600x900/buy_modal_opened.png') 
-SELL_MODAL_OPENED_1600_1900 = cv2.imread('./templates/1600x900/sell_modal_opened.png') 
-
-# close
+BUY_MODAL_OPEN_1600_1900 = cv2.imread('./templates/1600x900/buy_modal_opened.png') 
+# SELL_MODAL_OPENED_1600_1900 = cv2.imread('./templates/1600x900/sell_modal_opened.png') 
 MODAL_CLOSED_1600_1900 = cv2.imread('./templates/1600x900/modal_closed.png') 
 
 
@@ -37,37 +34,78 @@ SLOT_1_1600_1900 = cv2.imread('./templates/1600x900/slot_1.png')
 BADGE_1600_1900 = cv2.imread('./templates/1600x900/badge.png')
 
 
-HYPHEN_BIGGER_IMAGE = cv2.imread('./templates/1600x900/hyphen.png')
+# ----------------------------------------------------------------  CLICK POSITIONS ----------------------------------------------------------------
+BUY_BUTTON_FAVORITES = [1110, 828]
+MAX_PRICE_BUTTON_BUY_MODAL = [1284, 395]
+INC_QUANTITY_BUTTON_BUY_MODAL = [1284, 551]
+BUY_BUTTON_BUY_MODAL = [1034, 725]
 
 
 # ----------------------------------------------------------------  CAPTURE POSITIONS ----------------------------------------------------------------
-# TRANSACTIONS
-TRANSACTION_POS = [276, 191, 103, 459]
+# # TRANSACTIONS
+# TRANSACTION_POS = [276, 191, 103, 459]
 
-# ORDER TABLE
-ORDER_ROW_POS = [377, 361, 344, 327, 310, 294, 277, 260]
+# # ORDER TABLE
+# ORDER_ROW_POS = [377, 361, 344, 327, 310, 294, 277, 260]
 
-# MODAL STATUS
-BUY_MODAL_POS = [847, 257, 27, 17]
-SELL_MODAL_POS = [850, 295, 22, 14]
-BOUGHT_MODAL_POS = [615, 414, 36, 16]
-SOLD_MODAL_POS = [402, 184, 68, 17]
-SOLD_MULTI_MODAL_POS = [197, 128, 61, 19]
+# # MODAL STATUS
 
-CLOSE_MODAL_POS = [636, 142, 20, 13]
+# SELL_MODAL_POS = [850, 295, 22, 14]
+# BOUGHT_MODAL_POS = [615, 414, 36, 16]
+# SOLD_MODAL_POS = [402, 184, 68, 17]
+# SOLD_MULTI_MODAL_POS = [197, 128, 61, 19]
+
+# CLOSE_MODAL_POS = [636, 142, 20, 13]
 
 # PRICE
-MAX_PRICE_POS = [896, 312, 142, 20]
-MIN_PRICE_POS = [900, 320, 142, 22]
 
 
-# IN MODAL
-IN_BUY_MODAL_NAME_POS = 300, 345, 77, 14
-IN_SELL_MODAL_NAME_POS = 300, 375, 77, 14
+
+# MIN_PRICE_IN_SELL_MODAL_POS = [900, 320, 142, 22]
+
+
+# # IN MODAL
+# IN_BUY_MODAL_NAME_POS = 300, 345, 77, 14
+# IN_SELL_MODAL_NAME_POS = 300, 375, 77, 14
+
+
+# LATEST
+BUY_MODAL_OPEN_POS = [1278, 566, 25, 16]
+BUY_MODAL_CLOSE_POS = [523, 169, 23, 17]
+
+# PRICES
+MAX_PRICE_IN_BUY_MODAL_POS = [1195, 382, 86, 22]
+
+# chục nghìn tỷ
+CHUC_NGHIN_MAX_PRICE_IN_BUY_MODAL_POS = [1209, 382, 45, 22]
+# nghìn tỷ
+NGHIN_MAX_PRICE_IN_BUY_MODAL_POS = [1214, 382, 55, 22]
+# tram tỷ
+TRAM_MAX_PRICE_IN_BUY_MODAL_POS = [1225, 382, 55, 22]
+
+
+SPAM_ERROR_POS = [782, 422, 118, 22]
+ORDER_SLOT_RESULT = [1159, 464, 22, 34]
+
+
+# ----------------------------------------------------------------  PRICES  ----------------------------------------------------------------
+PRICE_TYPES={'0': MAX_PRICE_IN_BUY_MODAL_POS,'100': TRAM_MAX_PRICE_IN_BUY_MODAL_POS, '1000':NGHIN_MAX_PRICE_IN_BUY_MODAL_POS , '10000': CHUC_NGHIN_MAX_PRICE_IN_BUY_MODAL_POS}
+
+
+# ----------------------------------------------------------------  THRESHOLDS  ----------------------------------------------------------------
+OPEN_MODAL_THRESHOLD = 0.85
+CLOSE_MODAL_THRESHOLD = 0.85
+COMPARE_PRICE_THRESHOLD = 0.8
+
+
+# ----------------------------------------------------------------  TIMES  ----------------------------------------------------------------
+
+
+
 
 
 # ---------------------------------------------------------------- RESET TIME ----------------------------------------------------------------
-from timeCheck import  toResetTime
+from timeFns import  toResetTime
 
 
 RESET_TIME = {
@@ -107,6 +145,8 @@ RESET_TIME = {
     "Vieira": toResetTime("Chẵn 15-35"),
     "Xabi Alonso": toResetTime("Chẵn 29-49"),
     "Gerrard": toResetTime("Chẵn 24-45"),
+    "Torres": toResetTime("Chẵn 50 - Lẻ 20"),
+
 }
 
 

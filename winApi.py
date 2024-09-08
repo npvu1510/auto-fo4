@@ -6,6 +6,8 @@ from ctypes import wintypes
 from PIL import Image, ImageDraw
 from random import randrange
 
+def posToXYWH(pos):
+    return pos[0], pos[1], pos[2] , pos[3]
 
 KEY_CODES = {
     'A': 0x41,
@@ -144,9 +146,9 @@ def draw_point(image, x, y):
     draw.ellipse((x - radius, y - radius, x + radius, y + radius), fill='blue', outline='blue')
     return image
 
-def single_click(hwnd, x, y, hover=False, draw=''):
-    click_x = x - BORDER_WIDTH
-    click_y = y - TITLE_BAR_HEIGHT
+def single_click(hwnd, pos, hover=False, draw=''):
+    click_x = pos[0] - BORDER_WIDTH
+    click_y = pos[1] - TITLE_BAR_HEIGHT
 
     lparam = make_lparam(click_x, click_y)
 
@@ -159,19 +161,18 @@ def single_click(hwnd, x, y, hover=False, draw=''):
 
     if draw:
         image = capture_window(TARGET_WINDOW)
-        image_with_click = draw_point(image, x, y)
+        image_with_click = draw_point(image, pos[0], pos[1])
         image_with_click.save(draw)
 
-def multi_click(x, y, times=2, rand_x = False, rand_y=False , draw=''):
+def multi_click(pos, times=2, rand_x = False, rand_y=False , draw=''):
     i = 0
 
     while i < times:
         rand_x_val = randrange(rand_x) if rand_x else 0
         rand_y_val = randrange(rand_y) if rand_y else 0
 
-        single_click(TARGET_WINDOW, x + rand_x_val, y + rand_y_val, draw)
+        single_click(TARGET_WINDOW, pos[0] + rand_x_val, pos[1] + rand_y_val, draw)
         # time.sleep(0.001)
-
         i+=1
 
 def send_key(hwnd, key_code, justDown=False):
@@ -258,7 +259,9 @@ def capture_window(hwnd):
     image = Image.frombuffer('RGB', (width, height), data, 'raw', 'BGR', 0, 1)
     return image
 
-def capture_window_region(hwnd, x, y, w, h):
+def capture_window_region(hwnd, pos):
+    x,y,w,h = posToXYWH(pos)
+
     # Lấy DC của cửa sổ
     hdc_window = user32.GetWindowDC(hwnd)
     if not hdc_window:
