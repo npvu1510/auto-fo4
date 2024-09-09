@@ -3,4 +3,4 @@ env/
 timing_captures/
 *test*.*
 /*.png
-res
+res/*
