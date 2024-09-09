@@ -4,8 +4,9 @@ import cv2
 from skimage.metrics import structural_similarity as compare_ssim
 
 # my modules
-from winApi import *
-from constants import *
+from datetime import datetime
+from src.winApi import *
+from src.constants import *
 
 
 def posToXYWH(pos):
@@ -64,7 +65,6 @@ def compareImage_v2(img1, img2, threshold=0.95, showDiff=False, showScore = Fals
 
     return score < threshold, score
 
-
 def compareImage_template(img1, img2, threshold=0.8, showDiff=False):
     # Chuyển hình ảnh sang grayscale
     img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
@@ -106,8 +106,111 @@ def waitingFor(template, pos, appear = True, timeout = 1, threshold = 0.9, showS
 
     return True    
 
+def waitingForModalOpen(timeout=2):
+    # single_click(TARGET_WINDOW, BUY_BUTTON_FAVORITES)
+    isModalOpen = waitingFor(BUY_MODAL_OPEN_1600_1900, BUY_MODAL_OPEN_POS, threshold=OPEN_MODAL_THRESHOLD, timeout=timeout)
+
+    # Nếu modal chưa mở => có thể do lỗi spam hoặc timeout
+    if not isModalOpen:
+        spamCheck()
+        return False
+
+    return True
+
+def spamCheck(delayDurationInMinutes = 10):
+    # Kiểm tra lỗi spam
+    if not (compareImage_v2(imageToArr(capture_window_region(TARGET_WINDOW, SPAM_ERROR_POS)), SPAM_ERROR_1600_1900, threshold=0.8, showScore=True)[0]):
+        print(f"⌚ ĐANG GẶP LỖI SPAM CHỜ {delayDurationInMinutes} PHÚT...")
+        time.sleep(delayDurationInMinutes * 60)
+
+        closeAndWait()
+        time.sleep(1)
+        
+    # Kiểm tra lỗi timeout
+    else:
+        print('⏰ TIMEOUT KHI MỞ MODAL')
+        closeAndWait()
+
+def delayAfterDuration(start, intervalInMinutes = 1, durationInSeconds = 5):
+    currentSecond = datetime.now().second
+    
+    if currentSecond not in range(0,10) and currentSecond not in range(59 - durationInSeconds, 59) and time.time() - start > intervalInMinutes * 60:
+        print(f'🫸 TẠM DỪNG {durationInSeconds} GIÂY SAU MỖI {intervalInMinutes} PHÚT TRÁNH SPAM...')
+        time.sleep(durationInSeconds)
+        os.system('cls')
+        return time.time()
+    return start
+
+def checkingToCancelOrder(grade = 1):
+    # currentSlotImage = capture_window_region(TARGET_WINDOW, 1159, 464 + 34 * (grade - 1) - int(0.5 * grade), 22, 34)
+    currentSlotImage = capture_window_region(TARGET_WINDOW, [ORDER_SLOT_RESULT[0], ORDER_SLOT_RESULT[1] + 34 * (grade - 1) - int(0.5 * grade), ORDER_SLOT_RESULT[2], ORDER_SLOT_RESULT[3]])
+    # saveImage(currentSlotImage, 'currentSlotImage.png')
+
+    return not compareImage_v2(SLOT_1_1600_1900, imageToArr(currentSlotImage), threshold=0.75)[0]
+
+def checkNotification():
+    currentBadge = capture_window_region(TARGET_WINDOW, 785, 165, 11, 10)
+    res = compareImage_v2(BADGE_1600_1900, imageToArr(currentBadge))[0]
+    if not res:
+        print('🎉 Cầu thủ đã về')
+        single_click(TARGET_WINDOW, 828, 178)
+        time.sleep(5)
+        single_click(TARGET_WINDOW, 665, 183)
+    
+    return res
+
+
+# ---------------------------------------------------------------- CLICK/PRESSED FUNCTIONS ----------------------------------------------------------------
+def cancelFirstOrder():
+    single_click(TARGET_WINDOW, 828, 178)
+    time.sleep(0.5)
+    multi_click(1335, 256, rand_x=True)
+    time.sleep(0.5)
+    single_click(TARGET_WINDOW, 851, 622)
+    time.sleep(0.5)
+    send_key(TARGET_WINDOW, KEY_CODES['ESC'])
+    time.sleep(0.5)
+    single_click(TARGET_WINDOW, 665, 183)
+
+
+def closeAndWait(timeout=1):
+    # single_click(TARGET_WINDOW, 1214, 724)        
+    send_key(TARGET_WINDOW, KEY_CODES['ESC'])
+    waitingFor(MODAL_CLOSED_1600_1900,[523, 169, 23, 17], timeout=timeout, threshold=CLOSE_MODAL_THRESHOLD)
+
+
+
+def buyAndCapture(list='favorites', quantity = 1 ):
+    # Click vào giá
+    single_click(TARGET_WINDOW, MAX_PRICE_BUTTON_BUY_MODAL)
+    
+    # Tăng số lượng
+    if quantity - 1 > 0:
+        multi_click(INC_QUANTITY_BUTTON_BUY_MODAL, quantity - 1, rand_x=True)
+    
+    # Bấm mua
+    single_click(TARGET_WINDOW, BUY_BUTTON_BUY_MODAL)
+
+    if list == 'favorites':
+        saveImage(capture_window(TARGET_WINDOW), f'res/before_{time.time()}.png')
+        waitingFor(MODAL_CLOSED_1600_1900, BUY_MODAL_CLOSE_POS)
+        time.sleep(3)
+        saveImage(capture_window(TARGET_WINDOW), f'res/after_{time.time()}.png')
+    
+    elif list == 'transactions':
+        saveImage(capture_window(TARGET_WINDOW), f'res/updated_{time.time()}.png')
+        waitingFor(MODAL_CLOSED_1600_1900,[523, 169, 23, 17])  
+
 
 # ---------------------------------------------------------------- TEST FUNCTIONS ----------------------------------------------------------------
+def timing_capture(pos, duration = 5):
+    start = time.time()
+    index = 0
+    while time.time() - start <= duration:
+        image = capture_window_region(TARGET_WINDOW, pos[0], pos[1], pos[2], pos[3])
+        saveImage(image, f'timing_captures/{index}.png')
+        index +=1
+
 def testImage(position, template = None, compareByVersion2 = True, threshold = 0.85):
     prevImage = False
 
@@ -132,7 +235,6 @@ def testImage(position, template = None, compareByVersion2 = True, threshold = 0
             prevImage = currentImage
         # time.sleep(0.15)
 
-
 def openModalAnDoSth(openningThreshold = 0.95, save = False):
     while True:
         # CLICK MỞ MODAL 
@@ -150,7 +252,6 @@ def openModalAnDoSth(openningThreshold = 0.95, save = False):
 
         # Tram
         currentPrice = capture_window_region(TARGET_WINDOW, [1225, 382, 55, 22])
-
 
 
         # Nếu modal chưa mở => có thể do lỗi spam hoặc timeout
@@ -194,7 +295,6 @@ def compareTwoImgRead(imgPath1, imgPath2, threshold = 0.85, showDiff = False, sh
 def compareTwoImgArr(img1, img2, threshold = 0.85, showDiff = False, showScore = True):
     _, score = compareImage_v2(imageToArr(img1), imageToArr(img2), threshold=threshold, showDiff=showDiff, showScore=showScore)
     return score
-
 
 def compareContinousSamePrice(openningThreshold = 0.9,stoppingThreshold = 0.95):
     while True:
