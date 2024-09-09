@@ -171,7 +171,7 @@ def multi_click(pos, times=2, rand_x = False, rand_y=False , draw=''):
         rand_x_val = randrange(rand_x) if rand_x else 0
         rand_y_val = randrange(rand_y) if rand_y else 0
 
-        single_click(TARGET_WINDOW, pos[0] + rand_x_val, pos[1] + rand_y_val, draw)
+        single_click(TARGET_WINDOW, [pos[0] + rand_x_val, pos[1] + rand_y_val], draw)
         # time.sleep(0.001)
         i+=1
 
