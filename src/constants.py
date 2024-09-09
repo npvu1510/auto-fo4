@@ -49,8 +49,9 @@ COMPARE_PRICE_THRESHOLD = 0.8
 
 
 # ----------------------------------------------------------------  TIMES  ----------------------------------------------------------------
-DELAY_INTERVAL_IN_MINUTE = 2
-DELAY_DURATION_IN_SECOND = 10
+DELAY_INTERVAL_IN_MINUTE = 5
+DELAY_DURATION_IN_SECOND = 30
+OFFSET = 0
 
 
 

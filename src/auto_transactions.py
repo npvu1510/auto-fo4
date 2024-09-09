@@ -22,7 +22,7 @@ def runOnMyTransactions(resetTimes=[], priceType=PRICE_TYPES['0']):
 
         #  KIỂM TRA RESET TIME
         if resetTimes[row]:
-            message = time_until_reset(resetTimes[row], offset=5)
+            message = time_until_reset(resetTimes[row], offset=OFFSET)
             # Ngoài giờ reset
             if isinstance(message, str):
                 print(f'⌚ {message}')

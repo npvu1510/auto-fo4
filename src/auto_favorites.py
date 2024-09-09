@@ -19,7 +19,7 @@ def allInOnePlayer(resetTime = None, grade = None, priceType = PRICE_TYPES['0'] 
 
         #  KIỂM TRA RESET TIME
         if resetTime:
-            message = time_until_reset(resetTime, offset=5)
+            message = time_until_reset(resetTime, offset=OFFSET)
             # Ngoài giờ reset
             if isinstance(message, str):
                 print(f'⌚ {message}')
@@ -111,7 +111,7 @@ def multiPlayersWithPriority(players, autoDelay = False):
 
         #  KIỂM TRA RESET TIME
         if players[idx]['resetTime']:
-            message = time_until_reset(players[idx]['resetTime'], offset=5)
+            message = time_until_reset(players[idx]['resetTime'], offset=OFFSET)
             # Ngoài giờ reset
             if isinstance(message, str):
                 print(f'⌚ {message}')

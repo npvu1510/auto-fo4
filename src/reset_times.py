@@ -3,8 +3,7 @@ from src.timeFns import  toResetTime
 
 
 RESET_TIME = {
-    # "Scamacca": toResetTime("Chẵn 18 - Chẵn 38"),
-    "Scamacca": toResetTime("Chẵn 25 - Chẵn 40"),
+    "Scamacca": toResetTime("Chẵn 18 - Chẵn 38"),
     "Correa": toResetTime("Chẵn 15 - Chẵn 35"),
     "Unal": toResetTime("Chẵn 01 - Chẵn 21"),
     "Anguissa": toResetTime("Chẵn 20 - Chẵn 40"),
@@ -26,9 +25,7 @@ RESET_TIME = {
     "Saponara": toResetTime("Chẵn 30-59"),
     "Iwobi": toResetTime("Chẵn 00-25"),
     "Patricio": toResetTime("Chẵn 00-25"),
-    # "Banega": toResetTime("Chẵn 30-59"),
-    "Banega": toResetTime("Chẵn 40-59"),
-    "Ayoub": toResetTime("Chẵn 00-25"),
+    "Banega": toResetTime("Chẵn 30-59"),
     "Grifo": toResetTime("Chẵn 30-59"),
     "Anderson": toResetTime("Chẵn 30-59"),
     "Kaka": toResetTime("Chẵn 00-25"),
@@ -44,5 +41,6 @@ RESET_TIME = {
     "Gerrard": toResetTime("Chẵn 24-45"),
     "Torres": toResetTime("Chẵn 50 - Lẻ 20"),
     "Gerrard ITM": toResetTime("Chẵn 00-25"),
+    "Herrmann": toResetTime("Chẵn 00-25"),
 
 }

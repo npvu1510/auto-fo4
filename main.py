@@ -8,8 +8,8 @@ def main():
     # allInOnePlayer(RESET_TIME['Xabi Alonso'], grade= 8, priceType = PRICE_TYPES['10000'])
 
 
-    players = [{'row': 9, 'resetTime': RESET_TIME['Ayoub'], 'quantity': 3,'priceType': PRICE_TYPES['100']}, {'row': 7, 'resetTime': RESET_TIME['Guedes'], 'quantity': 3,'priceType': PRICE_TYPES['100']}, {'row': 10, 'resetTime': RESET_TIME['Banega'], 'quantity': 3,'priceType': PRICE_TYPES['100']}, {'row': 4, 'resetTime': RESET_TIME['Suarez'],'quantity': 1,'priceType': PRICE_TYPES['100']}]
-    multiPlayersWithPriority(players, autoDelay=True)
+    # players = [{'row': 10, 'resetTime': RESET_TIME['Herrmann'], 'quantity': 3,'priceType': PRICE_TYPES['100']}, {'row': 11, 'resetTime': RESET_TIME['Banega'], 'quantity': 3,'priceType': PRICE_TYPES['100']}, {'row': 4, 'resetTime': RESET_TIME['Suarez'],'quantity': 1,'priceType': PRICE_TYPES['100']}]
+    # multiPlayersWithPriority(players, autoDelay=True)
 
     pass
 
