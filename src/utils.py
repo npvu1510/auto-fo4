@@ -226,25 +226,25 @@ def buyAndCapture(list='favorites', quantity = 1, directory = 'results'):
     
     elif list == 'transactions':
         saveImage(capture_window(TARGET_WINDOW), f'{directory}/{buyAt}.png')
-        waitingFor(MODAL_CLOSED_1600_1900,[523, 169, 23, 17])
+        waitingFor(MODAL_CLOSED_1600_1900, BUY_MODAL_CLOSE_POS)
 
 
-# def sellAndCapture():
-#     # Bấm giá min
-#     single_click(TARGET_WINDOW, MIN_PRICE_SELL_MODAL)
+def sellAndCapture(quantity = 1, directory = 'results'):
+    # Bấm giá min
+    single_click(TARGET_WINDOW, MIN_PRICE_SELL_MODAL)
 
-#     # #  quantities
-#     #  single_click(TARGET_WINDOW, [1286, 618])
+    # #  quantities
+    #  single_click(TARGET_WINDOW, [1286, 618])
 
-#     # Bấm bán
-#     single_click(TARGET_WINDOW, SELL_BUTTON_SELL_MODAL)
+    # Bấm bán
+    single_click(TARGET_WINDOW, SELL_BUTTON_SELL_MODAL)
 
 
-#     buyAt = datetime.now().strftime("%Hh%Mm%Ss-%Y-%m-%d")
-#     saveImage(capture_window(TARGET_WINDOW), f'results/favorites/before_{buyAt}.png')
-#     waitingFor(MODAL_CLOSED_1600_1900, BUY_MODAL_CLOSE_POS)
-#     time.sleep(3)
-#     saveImage(capture_window(TARGET_WINDOW), f'results/favorites/after_{buyAt}.png')
+    buyAt = datetime.now().strftime("%Hh%Mm%Ss-%Y-%m-%d")
+    saveImage(capture_window(TARGET_WINDOW), f'={directory}/sell_before_{buyAt}.png')
+    waitingFor(MODAL_CLOSED_1600_1900, BUY_MODAL_CLOSE_POS)
+    time.sleep(3)
+    saveImage(capture_window(TARGET_WINDOW), f'={directory}/sell_after_{buyAt}.png')
 
 
 # ---------------------------------------------------------------- TEST FUNCTIONS ----------------------------------------------------------------

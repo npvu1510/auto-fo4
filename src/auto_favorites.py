@@ -15,7 +15,7 @@ def allInOnePlayer(resetTime = None, grade = None, priceType = PRICE_TYPES['0'],
         os.system('cls')
                 
         # RESET CHỈ DIỄN RA TRONG 10 GIÂY ĐẦU TIÊN CỦA PHÚT
-        if not isInFirst10Seconds(range(0, 10), message='⌛ Chỉ nhảy giá vào 10 giây đầu tiên của phút (hiện tại: {second}s)'):
+        if not isInFirst10Seconds():
             continue
         send_key(TARGET_WINDOW, KEY_CODES['ESC'])
 
@@ -98,7 +98,7 @@ def buyMultiPlayers(players, autoDelay = False):
         #     statCountDown = delayAfterDuration(statCountDown, intervalInMinutes=DELAY_INTERVAL_IN_MINUTE, durationInSeconds=DELAY_DURATION_IN_SECOND)
 
         # RESET CHỈ DIỄN RA TRONG 10 GIÂY ĐẦU TIÊN CỦA PHÚT
-        if not isInFirst10Seconds(range(0, 10), message='⌛ Chỉ nhảy giá vào 10 giây đầu tiên của phút (hiện tại: {second}s)'):
+        if not isInFirst10Seconds():
             continue
         send_key(TARGET_WINDOW, KEY_CODES['ESC'])
 
@@ -245,11 +245,7 @@ def sellPlayer(resetTime = None, grade = None, priceType = PRICE_TYPES['0'], aut
                 single_click(TARGET_WINDOW, SELL_BUTTON_SELL_MODAL)
 
 
-                buyAt = datetime.now().strftime("%Hh%Mm%Ss-%Y-%m-%d")
-                saveImage(capture_window(TARGET_WINDOW), f'results/favorites/before_{buyAt}.png')
-                waitingFor(MODAL_CLOSED_1600_1900, BUY_MODAL_CLOSE_POS)
-                time.sleep(3)
-                saveImage(capture_window(TARGET_WINDOW), f'results/favorites/after_{buyAt}.png')
+                sellAndCapture(directory='results/favorites')
 
             
                 # Nếu có reset time => đánh dấu đã cập nhật trong lần này
