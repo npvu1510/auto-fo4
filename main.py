@@ -8,7 +8,9 @@ def main():
     # allInOnePlayer(RESET_TIME['Xabi Alonso'], grade= 8, priceType = PRICE_TYPES['10000'])
 
 
-    players = [{'row': 5, 'resetTime': RESET_TIME['Fekir'], 'quantity': 3,'priceType': PRICE_TYPES['100']}, {'row': 12, 'resetTime': RESET_TIME['Banega'], 'quantity': 3,'priceType': PRICE_TYPES['100']}, {'row': 4, 'resetTime': RESET_TIME['Suarez'],'quantity': 1,'priceType': PRICE_TYPES['100']}]
+    # players = [{'row': 5, 'resetTime': RESET_TIME['Fekir'], 'quantity': 3,'priceType': PRICE_TYPES['100']}, {'row': 12, 'resetTime': RESET_TIME['Banega'], 'quantity': 3,'priceType': PRICE_TYPES['100']}, {'row': 4, 'resetTime': RESET_TIME['Suarez'],'quantity': 1,'priceType': PRICE_TYPES['100']}]
+
+    players = [{'row': 6, 'resetTime': RESET_TIME['Fekir'], 'quantity': 2,'priceType': PRICE_TYPES['100']}, {'row': 5, 'resetTime': RESET_TIME['Danjuma'], 'quantity': 2,'priceType': PRICE_TYPES['100']}, {'row': 7, 'resetTime': RESET_TIME['Inaki'],'quantity': 1,'priceType': PRICE_TYPES['100']}, {'row': 3, 'resetTime': RESET_TIME['Suarez'],'quantity': 1,'priceType': PRICE_TYPES['100']}, {'row': 8, 'resetTime': RESET_TIME['Abedi'],'quantity': 1,'priceType': PRICE_TYPES['100']}]
     multiPlayersWithPriority(players, autoDelay=True)
 
     pass
