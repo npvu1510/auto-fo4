@@ -1,6 +1,6 @@
 from src.constants import *
 from src.auto_favorites import allInOnePlayer, buyMultiPlayers, sellPlayer
-from src.utils import slotCheck, cancelFirstOrder
+from src.utils import *
 from src.reset_times import RESET_TIME
 
 def main():

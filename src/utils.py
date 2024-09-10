@@ -186,7 +186,7 @@ def checkNotification():
 # ---------------------------------------------------------------- CLICK/PRESSED FUNCTIONS ----------------------------------------------------------------
 def cancelFirstOrder():
     single_click(TARGET_WINDOW, [828, 178])
-    time.sleep(0.5)
+    time.sleep(1)
     multi_click([1335, 256], rand_x=True)
     time.sleep(0.5)
     single_click(TARGET_WINDOW, [851, 622])
@@ -194,6 +194,7 @@ def cancelFirstOrder():
     send_key(TARGET_WINDOW, KEY_CODES['ESC'])
     time.sleep(0.5)
     single_click(TARGET_WINDOW, [665, 183])
+    time.sleep(3)
 
 
 def closeAndWait(timeout=1):
@@ -241,10 +242,10 @@ def testImage(position, template = None, compareByVersion2 = True, threshold = 0
     prevImage = False
 
     while True:
-        currentImage = capture_window_region(TARGET_WINDOW, position[0], position[1], position[2], position[3])
+        currentImage = capture_window_region(TARGET_WINDOW, [position[0], position[1], position[2], position[3]])
         # saveImage(currentImage, 'currentImage.png')
         if template.any():
-            isAppear = not compareImage(template, imageToArr(currentImage), threshold=threshold, showDiff=False) if not compareByVersion2 else not compareImage_v2(template, imageToArr(currentImage), threshold=threshold, showDiff=False)
+            isAppear = not compareImage(template, imageToArr(currentImage), threshold=threshold, showDiff=False) if not compareByVersion2 else not compareImage_v2(template, imageToArr(currentImage), threshold=threshold, showDiff=False, showScore=True)[0]
             if isAppear:
                 print("Xuất hiện")
             else:

@@ -208,6 +208,14 @@ def sellPlayer(resetTime = None, grade = None, priceType = PRICE_TYPES['0'], aut
         if autoCancel and needToCancel:
             needToCancel = False
             cancelFirstOrder()
+
+            # KIỂM TRA CÓ CÒN CẦU THỦ ĐỂ BÁN KHÔNG HAY LÀ ĐÃ BÁN RỒI
+            currentSellBtn = capture_window_region(TARGET_WINDOW, [1260, 818, 50,20])
+            if compareImage_v2(AVAILABLE_SELL_BUTTON_1600_1900, imageToArr(currentSellBtn), threshold=0.85):
+                print("🎉 Bán thành công !")
+                exit(0)
+
+            
         
         # CLICK MỞ MODAL 
         # single_click(TARGET_WINDOW, BUY_BUTTON_FAVORITES)

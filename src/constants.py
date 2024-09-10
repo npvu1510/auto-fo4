@@ -12,6 +12,8 @@ SELL_SLOT_1_1600_1900 = cv2.imread('./templates/1600x900/sell_slot_1.png')
 BADGE_1600_1900 = cv2.imread('./templates/1600x900/badge.png')
 
 
+AVAILABLE_SELL_BUTTON_1600_1900 = cv2.imread('./templates/1600x900/available_sell_btn.png')
+
 # ----------------------------------------------------------------  CLICK POSITIONS ----------------------------------------------------------------
 BUY_BUTTON_FAVORITES = [1110, 828]
 SELL_BUTTON_FAVORITES = [1287, 826]
