@@ -206,7 +206,7 @@ def closeAndWait(timeout=1):
 
 def buyAndCapture(list='favorites', quantity = 1, directory = 'results' ):
     # Click vào giá
-    single_click(TARGET_WINDOW, MAX_PRICE_BUTTON_BUY_MODAL)
+    single_click(TARGET_WINDOW, MAX_PRICE_BUY_MODAL)
     
     # Tăng số lượng
     if quantity - 1 > 0:
