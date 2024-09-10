@@ -16,10 +16,17 @@ def runOnMyTransactions(resetTimes=[], priceType=PRICE_TYPES['0']):
     while True:
         os.system('cls')
 
-        statCountDown = delayAfterDuration(statCountDown, intervalInMinutes=3, durationInSeconds=10)
+        # statCountDown = delayAfterDuration(statCountDown, intervalInMinutes=3, durationInSeconds=10)
+
+        # RESET CHỈ DIỄN RA TRONG KHOẢNG 55s phút trước -> 10s phút kế tiếp
+        now = datetime.now()
+        if now.second not in range(0, 11) and now.second not in range(55,61):
+            print(f'⌛ Chỉ nhảy giá vào 10 giây đầu và 5 giây cuối của phút (hiện tại: giây thứ {now.second})')
+            continue
+        send_key(TARGET_WINDOW, KEY_CODES['ESC'])
+        
         
         print(f"👉 Dòng {row + 1}")
-
         #  KIỂM TRA RESET TIME
         if resetTimes[row]:
             message = time_until_reset(resetTimes[row], offset=OFFSET)

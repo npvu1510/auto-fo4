@@ -19,6 +19,7 @@ def allInOnePlayer(resetTime = None, grade = None, priceType = PRICE_TYPES['0'] 
         if now.second not in range(0, 11) and now.second not in range(55,61):
             print(f'⌛ Chỉ nhảy giá vào 10 giây đầu và 5 giây cuối của phút (hiện tại: giây thứ {now.second})')
             continue
+        send_key(TARGET_WINDOW, KEY_CODES['ESC'])
 
         # statCountDown = delayAfterDuration(statCountDown, intervalInMinutes=DELAY_INTERVAL_IN_MINUTE, durationInSeconds=DELAY_DURATION_IN_SECOND)
 
@@ -115,6 +116,8 @@ def multiPlayersWithPriority(players, autoDelay = False):
         if now.second not in range(0, 11) and now.second not in range(55,61):
             print(f'⌛ Chỉ nhảy giá vào 10 giây đầu và 5 giây cuối của phút (hiện tại: giây thứ {now.second})')
             continue
+        send_key(TARGET_WINDOW, KEY_CODES['ESC'])
+
 
         # KIỂM TRA THẺ ĐANG ĐƯỢC ƯU TIÊN CHÈN => NẾU CHƯA TỒN TẠI THỲ BYPASS
         if selected != -1 and idx != selected:
