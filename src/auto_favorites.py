@@ -13,9 +13,16 @@ def allInOnePlayer(resetTime = None, grade = None, priceType = PRICE_TYPES['0'] 
     prevPrice = currentPrice = updated = needToCancel = None
     while True:
         os.system('cls')
+        print(f"🔃 ĐANG CHÈN CẦU THỦ...")
+                
+        # RESET CHỈ DIỄN RA TRONG KHOẢNG 55s phút trước -> 10s phút kế tiếp
+        now = datetime.now()
+        if now.second not in range(0, 11) and now.second not in range(55,61):
+            print(f'⌛ Chỉ nhảy giá vào 10 giây đầu và 5 giây cuối của phút (hiện tại: giây thứ {now.second})')
+            continue
+
         # statCountDown = delayAfterDuration(statCountDown, intervalInMinutes=DELAY_INTERVAL_IN_MINUTE, durationInSeconds=DELAY_DURATION_IN_SECOND)
 
-        print(f"🔃 ĐANG CHÈN CẦU THỦ...")
 
         #  KIỂM TRA RESET TIME
         if resetTime:
@@ -107,6 +114,7 @@ def multiPlayersWithPriority(players, autoDelay = False):
         # RESET CHỈ DIỄN RA TRONG KHOẢNG 55s phút trước -> 10s phút kế tiếp
         now = datetime.now()
         if now.second not in range(0, 11) and now.second not in range(55,61):
+            print(f'⌛ Chỉ nhảy giá vào 10 giây đầu và 5 giây cuối của phút (hiện tại: giây thứ {now.second})')
             continue
 
         # KIỂM TRA THẺ ĐANG ĐƯỢC ƯU TIÊN CHÈN => NẾU CHƯA TỒN TẠI THỲ BYPASS
