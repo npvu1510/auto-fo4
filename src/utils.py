@@ -193,7 +193,7 @@ def buyAndCapture(list='favorites', quantity = 1, directory = 'results' ):
     
 
     # Chup man hinh
-    buyAt = datetime.now().strftime("%H:%M:%S-%Y-%m-%d")
+    buyAt = datetime.now().strftime("%Hh%Mm%Ss-%Y-%m-%d")
     if list == 'favorites':
         saveImage(capture_window(TARGET_WINDOW), f'{directory}/before_{buyAt}.png')
         waitingFor(MODAL_CLOSED_1600_1900, BUY_MODAL_CLOSE_POS)
