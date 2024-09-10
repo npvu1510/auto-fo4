@@ -6,3 +6,5 @@ timing_captures/
 results/*
 !results/**/*.gitkeep
 !results/**/
+results/favorites/
+results/transactions/
