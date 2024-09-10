@@ -180,7 +180,7 @@ def closeAndWait(timeout=1):
 
 
 
-def buyAndCapture(list='favorites', quantity = 1 ):
+def buyAndCapture(list='favorites', quantity = 1, directory = 'results' ):
     # Click vào giá
     single_click(TARGET_WINDOW, MAX_PRICE_BUTTON_BUY_MODAL)
     
@@ -190,15 +190,18 @@ def buyAndCapture(list='favorites', quantity = 1 ):
     
     # Bấm mua
     single_click(TARGET_WINDOW, BUY_BUTTON_BUY_MODAL)
+    
 
+    # Chup man hinh
+    buyAt = datetime.now().strftime("%H:%M:%S-%Y-%m-%d")
     if list == 'favorites':
-        saveImage(capture_window(TARGET_WINDOW), f'res/before_{time.time()}.png')
+        saveImage(capture_window(TARGET_WINDOW), f'{directory}/before_{buyAt}.png')
         waitingFor(MODAL_CLOSED_1600_1900, BUY_MODAL_CLOSE_POS)
         time.sleep(3)
-        saveImage(capture_window(TARGET_WINDOW), f'res/after_{time.time()}.png')
+        saveImage(capture_window(TARGET_WINDOW), f'{directory}/after_{buyAt}.png')
     
     elif list == 'transactions':
-        saveImage(capture_window(TARGET_WINDOW), f'res/updated_{time.time()}.png')
+        saveImage(capture_window(TARGET_WINDOW), f'{directory}/{buyAt}.png')
         waitingFor(MODAL_CLOSED_1600_1900,[523, 169, 23, 17])  
 
 

@@ -101,8 +101,13 @@ def multiPlayersWithPriority(players, autoDelay = False):
         os.system('cls')
         print(f"🔃 ĐANG CHÈN CẦU THỦ #{idx + 1}...")
 
-        if autoDelay:
-            statCountDown = delayAfterDuration(statCountDown, intervalInMinutes=DELAY_INTERVAL_IN_MINUTE, durationInSeconds=DELAY_DURATION_IN_SECOND)
+        # if autoDelay:
+        #     statCountDown = delayAfterDuration(statCountDown, intervalInMinutes=DELAY_INTERVAL_IN_MINUTE, durationInSeconds=DELAY_DURATION_IN_SECOND)
+
+        # RESET CHỈ DIỄN RA TRONG KHOẢNG 55s phút trước -> 10s phút kế tiếp
+        now = datetime.now()
+        if now.second not in range(0, 11) and now.second not in range(55,61):
+            continue
 
         # KIỂM TRA THẺ ĐANG ĐƯỢC ƯU TIÊN CHÈN => NẾU CHƯA TỒN TẠI THỲ BYPASS
         if selected != -1 and idx != selected:
@@ -151,7 +156,7 @@ def multiPlayersWithPriority(players, autoDelay = False):
 
             # Giá đã thay đổi
             if isDiff:
-                buyAndCapture(quantity=players[idx]['quantity'])
+                buyAndCapture(quantity=players[idx]['quantity'], directory='results/favorites')
 
                 # Nếu có reset time => đánh dấu đã cập nhật trong lần này
                 if players[idx]['resetTime']:

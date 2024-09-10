@@ -113,5 +113,3 @@ def toResetTime(resetStr):
         return {'startHourType': split_parts[0].lower(), 'startMinute':  startMinute, 'endHourType': split_parts[0].lower(),  'endMinute': endMinute}
     else:        
         return {'startHourType': split_parts[0].lower(), 'startMinute':  int(split_parts[1]), 'endHourType': split_parts[3].lower(),  'endMinute': int(split_parts[-1])}
-
-

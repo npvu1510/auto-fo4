@@ -3,4 +3,6 @@ env/
 timing_captures/
 *test*.*
 /*.png
-res/*
+results/*
+!results/**/*.gitkeep
+!results/**/

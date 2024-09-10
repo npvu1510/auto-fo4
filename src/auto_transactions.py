@@ -57,7 +57,7 @@ def runOnMyTransactions(resetTimes=[], priceType=PRICE_TYPES['0']):
 
             # Giá đã thay đổi
             if  isDiff:                
-                buyAndCapture(list='transactions')
+                buyAndCapture(list='transactions', directory='results/transactions')
 
                 # # FOR DEBUGGING
                 # saveImage(prevPrice[row], f'prevPrice_{row}_{time.time()}.png')

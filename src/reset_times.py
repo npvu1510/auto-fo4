@@ -42,5 +42,6 @@ RESET_TIME = {
     "Torres": toResetTime("Chẵn 50 - Lẻ 20"),
     "Gerrard ITM": toResetTime("Chẵn 00-25"),
     "Herrmann": toResetTime("Chẵn 00-25"),
+    "Fekir": toResetTime("Chẵn 00-25"),
 
 }
