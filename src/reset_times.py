@@ -47,6 +47,7 @@ RESET_TIME = {
     "Wirtz": toResetTime("Chẵn 55 - Lẻ 15"),
     "Danjuma": toResetTime("Chẵn 22 - Chẵn 42"),
     "Abedi": toResetTime("Lẻ 16 - Lẻ 36"),
-    "Xabi Alonso CU": toResetTime("chẳn 56_lẻ 16"),
+    "Xabi Alonso CU": toResetTime("chẳn 56 - lẻ 16"),
+    "Antony": toResetTime("Chẵn 44 - Lẻ 04"),
     
 }

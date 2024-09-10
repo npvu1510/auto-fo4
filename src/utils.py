@@ -117,9 +117,29 @@ def waitingForModalOpen(timeout=2):
 
     return True
 
+def waitingForModalClose(timeout=2):
+    # single_click(TARGET_WINDOW, BUY_BUTTON_FAVORITES)
+    isModalClose = waitingFor(SELL_MODAL_OPEN_1600_1900, [935, 516, 38, 20], threshold=0.95, timeout=timeout)
+
+    # Nếu modal chưa mở => có thể do lỗi spam hoặc timeout
+    if not isModalClose:
+        spamCheck()
+        return False
+
+    return True
+
+
+def isInTimeRange(rang, message):
+    second = datetime.now().second
+    if second not in rang:
+        print(message)
+        return False
+    
+    return True
+
 def spamCheck(delayDurationInMinutes = 10):
     # Kiểm tra lỗi spam
-    if not (compareImage_v2(imageToArr(capture_window_region(TARGET_WINDOW, SPAM_ERROR_POS)), SPAM_ERROR_1600_1900, threshold=0.8, showScore=True)[0]):
+    if not (compareImage_v2(imageToArr(capture_window_region(TARGET_WINDOW, SPAM_ERROR_POS)), SPAM_ERROR_1600_1900, threshold=0.8, showScore=False)[0]):
         print(f"⌚ ĐANG GẶP LỖI SPAM CHỜ {delayDurationInMinutes} PHÚT...")
         time.sleep(delayDurationInMinutes * 60)
 
@@ -141,12 +161,15 @@ def delayAfterDuration(start, intervalInMinutes = 1, durationInSeconds = 5):
         return time.time()
     return start
 
-def checkingToCancelOrder(grade = 1):
-    # currentSlotImage = capture_window_region(TARGET_WINDOW, 1159, 464 + 34 * (grade - 1) - int(0.5 * grade), 22, 34)
-    currentSlotImage = capture_window_region(TARGET_WINDOW, [ORDER_SLOT_RESULT[0], ORDER_SLOT_RESULT[1] + 34 * (grade - 1) - int(0.5 * grade), ORDER_SLOT_RESULT[2], ORDER_SLOT_RESULT[3]])
-    # saveImage(currentSlotImage, 'currentSlotImage.png')
+def slotCheck(grade = 1, slotType = 'buy'):
+    slot_check_pos = BUY_SLOT_CHECK_POS if slotType == 'buy' else SELL_SLOT_CHECK_POS
+    currentSlot = capture_window_region(TARGET_WINDOW, [slot_check_pos[0], slot_check_pos[1] + 34 * (grade - 1) - int(0.5 * grade), slot_check_pos[2], slot_check_pos[3]])
+    # saveImage(currentSlot, f'{slotType}_slot_{grade}.png')
 
-    return not compareImage_v2(SLOT_1_1600_1900, imageToArr(currentSlotImage), threshold=0.75)[0]
+    folder = 'buySlots' if slotType == 'buy' else 'sellSlots'
+    # print(f'./templates/1600x900/{folder}/{slotType}_slot_{grade}.png')
+    template = cv2.imread(f'./templates/1600x900/{folder}/{slotType}_slot_{grade}.png')
+    return not compareImage_v2(template, imageToArr(currentSlot), threshold=0.95, showScore=True)[0]
 
 def checkNotification():
     currentBadge = capture_window_region(TARGET_WINDOW, 785, 165, 11, 10)
@@ -162,15 +185,15 @@ def checkNotification():
 
 # ---------------------------------------------------------------- CLICK/PRESSED FUNCTIONS ----------------------------------------------------------------
 def cancelFirstOrder():
-    single_click(TARGET_WINDOW, 828, 178)
+    single_click(TARGET_WINDOW, [828, 178])
     time.sleep(0.5)
-    multi_click(1335, 256, rand_x=True)
+    multi_click([1335, 256], rand_x=True)
     time.sleep(0.5)
-    single_click(TARGET_WINDOW, 851, 622)
+    single_click(TARGET_WINDOW, [851, 622])
     time.sleep(0.5)
     send_key(TARGET_WINDOW, KEY_CODES['ESC'])
     time.sleep(0.5)
-    single_click(TARGET_WINDOW, 665, 183)
+    single_click(TARGET_WINDOW, [665, 183])
 
 
 def closeAndWait(timeout=1):
@@ -210,7 +233,7 @@ def timing_capture(pos, duration = 5):
     start = time.time()
     index = 0
     while time.time() - start <= duration:
-        image = capture_window_region(TARGET_WINDOW, pos[0], pos[1], pos[2], pos[3])
+        image = capture_window_region(TARGET_WINDOW, [pos[0], pos[1], pos[2], pos[3]])
         saveImage(image, f'timing_captures/{index}.png')
         index +=1
 
