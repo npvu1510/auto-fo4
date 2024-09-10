@@ -177,10 +177,10 @@ def sellPlayer(resetTime = None, grade = None, priceType = PRICE_TYPES['0'], aut
     while True:
         os.system('cls')
                 
-        # RESET CHỈ DIỄN RA TRONG 10 GIÂY ĐẦU TIÊN CỦA PHÚT
-        if not isInTimeRange(range(0, 10), message='⌛ Chỉ nhảy giá vào 10 giây đầu tiên của phút (hiện tại: {second}s)'):
-            continue
-        send_key(TARGET_WINDOW, KEY_CODES['ESC'])
+        # # RESET CHỈ DIỄN RA TRONG 10 GIÂY ĐẦU TIÊN CỦA PHÚT
+        # if not isInFirst10Seconds():
+        #     continue
+        # send_key(TARGET_WINDOW, KEY_CODES['ESC'])
 
         # statCountDown = delayAfterDuration(statCountDown, intervalInMinutes=DELAY_INTERVAL_IN_MINUTE, durationInSeconds=DELAY_DURATION_IN_SECOND)
 

@@ -129,10 +129,10 @@ def waitingForModalClose(timeout=2):
     return True
 
 
-def isInTimeRange(rang, message):
+def isInFirst10Seconds():
     second = datetime.now().second
-    if second not in rang:
-        print(message)
+    if second not in range(0, 11):
+        print(f'⌛ Chỉ nhảy giá vào 10 giây đầu tiên của phút (hiện tại: {second}s)')
         return False
     
     return True
