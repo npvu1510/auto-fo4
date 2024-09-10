@@ -13,7 +13,6 @@ def allInOnePlayer(resetTime = None, grade = None, priceType = PRICE_TYPES['0'] 
     prevPrice = currentPrice = updated = needToCancel = None
     while True:
         os.system('cls')
-        print(f"🔃 ĐANG CHÈN CẦU THỦ...")
                 
         # RESET CHỈ DIỄN RA TRONG KHOẢNG 55s phút trước -> 10s phút kế tiếp
         now = datetime.now()
@@ -24,6 +23,7 @@ def allInOnePlayer(resetTime = None, grade = None, priceType = PRICE_TYPES['0'] 
         # statCountDown = delayAfterDuration(statCountDown, intervalInMinutes=DELAY_INTERVAL_IN_MINUTE, durationInSeconds=DELAY_DURATION_IN_SECOND)
 
 
+        print(f"🔃 ĐANG CHÈN CẦU THỦ...")
         #  KIỂM TRA RESET TIME
         if resetTime:
             message = time_until_reset(resetTime, offset=OFFSET)
@@ -106,7 +106,6 @@ def multiPlayersWithPriority(players, autoDelay = False):
     idx = 0
     while True:
         os.system('cls')
-        print(f"🔃 ĐANG CHÈN CẦU THỦ #{idx + 1}...")
 
         # if autoDelay:
         #     statCountDown = delayAfterDuration(statCountDown, intervalInMinutes=DELAY_INTERVAL_IN_MINUTE, durationInSeconds=DELAY_DURATION_IN_SECOND)
@@ -122,6 +121,7 @@ def multiPlayersWithPriority(players, autoDelay = False):
             idx = idx + 1 if idx < len(players) - 1 else 0
             continue
 
+        print(f"🔃 ĐANG CHÈN CẦU THỦ #{idx + 1}...")
         #  KIỂM TRA RESET TIME
         if players[idx]['resetTime']:
             message = time_until_reset(players[idx]['resetTime'], offset=OFFSET)
