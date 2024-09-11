@@ -119,7 +119,7 @@ def waitingForModalOpen(timeout=2):
 
 def waitingForModalClose(timeout=2):
     # single_click(TARGET_WINDOW, BUY_BUTTON_FAVORITES)
-    isModalClose = waitingFor(SELL_MODAL_OPEN_1600_1900, [935, 516, 38, 20], threshold=0.95, timeout=timeout)
+    isModalClose = waitingFor(SELL_MODAL_OPEN_1600_1900, SELL_MODAL_OPEN_POS, threshold=OPEN_MODAL_THRESHOLD, timeout=timeout)
 
     # Nếu modal chưa mở => có thể do lỗi spam hoặc timeout
     if not isModalClose:
@@ -220,13 +220,13 @@ def buyAndCapture(list='favorites', quantity = 1, directory = 'results'):
     buyAt = datetime.now().strftime("%Hh%Mm%Ss-%Y-%m-%d")
     if list == 'favorites':
         saveImage(capture_window(TARGET_WINDOW), f'{directory}/before_{buyAt}.png')
-        waitingFor(MODAL_CLOSED_1600_1900, BUY_MODAL_CLOSE_POS)
+        waitingFor(MODAL_CLOSED_1600_1900, MODAL_CLOSE_POS)
         time.sleep(3)
         saveImage(capture_window(TARGET_WINDOW), f'{directory}/after_{buyAt}.png')
     
     elif list == 'transactions':
         saveImage(capture_window(TARGET_WINDOW), f'{directory}/{buyAt}.png')
-        waitingFor(MODAL_CLOSED_1600_1900, BUY_MODAL_CLOSE_POS)
+        waitingFor(MODAL_CLOSED_1600_1900, MODAL_CLOSE_POS)
 
 
 def sellAndCapture(quantity = 1, directory = 'results'):
@@ -242,7 +242,7 @@ def sellAndCapture(quantity = 1, directory = 'results'):
 
     buyAt = datetime.now().strftime("%Hh%Mm%Ss-%Y-%m-%d")
     saveImage(capture_window(TARGET_WINDOW), f'={directory}/sell_before_{buyAt}.png')
-    waitingFor(MODAL_CLOSED_1600_1900, BUY_MODAL_CLOSE_POS)
+    waitingFor(MODAL_CLOSED_1600_1900, MODAL_CLOSE_POS)
     time.sleep(3)
     saveImage(capture_window(TARGET_WINDOW), f'={directory}/sell_after_{buyAt}.png')
 
@@ -304,7 +304,7 @@ def openModalAnDoSth(openningThreshold = 0.95, save = False):
             print('⏰ TIMEOUT KHI MỞ MODAL')
             # single_click(TARGET_WINDOW, 1214, 724)
             send_key(TARGET_WINDOW, KEY_CODES['ESC'])
-            waitingFor(MODAL_CLOSED_1600_1900, BUY_MODAL_CLOSE_POS)
+            waitingFor(MODAL_CLOSED_1600_1900, MODAL_CLOSE_POS)
             continue
     
         # timing_capture([1239, 545, 37, 30])

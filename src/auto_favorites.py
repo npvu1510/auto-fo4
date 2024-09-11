@@ -226,7 +226,7 @@ def sellPlayer(resetTime = None, grade = None, priceType = PRICE_TYPES['0'], aut
         if not isModalClose:
             continue
 
-        # timing_capture([935, 516, 38, 20])
+        # timing_capture(SELL_MODAL_OPEN_POS)
         # exit()
 
         # KIỂM TRA THÔNG TIN MODAL (GIÁ)
@@ -235,16 +235,6 @@ def sellPlayer(resetTime = None, grade = None, priceType = PRICE_TYPES['0'], aut
             # isDiff,score = compareImage_v2(imageToArr(prevPrice), imageToArr(currentPrice), threshold=COMPARE_PRICE_THRESHOLD)
 
             if isDiff:
-                # Bấm giá min
-                single_click(TARGET_WINDOW, MIN_PRICE_SELL_MODAL)
-
-                # #  quantities
-                #  single_click(TARGET_WINDOW, [1286, 618])
-
-                # Bấm bán
-                single_click(TARGET_WINDOW, SELL_BUTTON_SELL_MODAL)
-
-
                 sellAndCapture(directory='results/favorites')
 
             

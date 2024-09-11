@@ -3,12 +3,10 @@ import cv2
 # ---------------------------------------------------------------- TEMPLATES ----------------------------------------------------------------
 # 1600x900
 BUY_MODAL_OPEN_1600_1900 = cv2.imread('./templates/1600x900/buy_modal_opened.png') 
-SELL_MODAL_OPEN_1600_1900 = cv2.imread('./templates/1600x900/207.png') 
+SELL_MODAL_OPEN_1600_1900 = cv2.imread('./templates/1600x900/90.png') 
 MODAL_CLOSED_1600_1900 = cv2.imread('./templates/1600x900/modal_closed.png') 
 
 SPAM_ERROR_1600_1900 = cv2.imread('./templates/1600x900/spam_error.png')
-BUY_SLOT_1_1600_1900 = cv2.imread('./templates/1600x900/buy_slot_1.png')
-SELL_SLOT_1_1600_1900 = cv2.imread('./templates/1600x900/sell_slot_1.png')
 BADGE_1600_1900 = cv2.imread('./templates/1600x900/badge.png')
 
 
@@ -31,7 +29,9 @@ SELL_BUTTON_SELL_MODAL = [1034, 725]
 # ----------------------------------------------------------------  CAPTURE POSITIONS ----------------------------------------------------------------
 # MODAL
 BUY_MODAL_OPEN_POS = [1278, 566, 25, 16]
-BUY_MODAL_CLOSE_POS = [523, 169, 23, 17]
+SELL_MODAL_OPEN_POS = [1278, 642, 25, 16]
+
+MODAL_CLOSE_POS = [523, 169, 23, 17]
 
 # PRICES
 MAX_PRICE_IN_BUY_MODAL_POS = [1195, 382, 86, 22]
