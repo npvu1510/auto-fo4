@@ -1,6 +1,6 @@
 __pycache__/
 env/
-timing_captures/
+timing_captures/*.png
 *test*.*
 /*.png
 results/*
