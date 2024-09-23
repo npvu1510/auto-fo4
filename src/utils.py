@@ -204,7 +204,7 @@ def closeAndWait(timeout=1):
 
 
 
-def buyAndCapture(list='favorites', quantity = 1, directory = 'results'):
+def buyAndCapture(listType='favorites', quantity = 1):
     # Click vào giá
     single_click(TARGET_WINDOW, MAX_PRICE_BUY_MODAL)
     
@@ -218,18 +218,18 @@ def buyAndCapture(list='favorites', quantity = 1, directory = 'results'):
 
     # Chup man hinh
     buyAt = datetime.now().strftime("%Hh%Mm%Ss-%Y-%m-%d")
-    if list == 'favorites':
-        saveImage(capture_window(TARGET_WINDOW), f'{directory}/before_{buyAt}.png')
+    if listType == 'favorites':
+        saveImage(capture_window(TARGET_WINDOW), f'results/{listType}/before_{buyAt}.png')
         waitingFor(MODAL_CLOSED_1600_1900, MODAL_CLOSE_POS)
         time.sleep(3)
-        saveImage(capture_window(TARGET_WINDOW), f'{directory}/after_{buyAt}.png')
+        saveImage(capture_window(TARGET_WINDOW), f'results/{listType}/after_{buyAt}.png')
     
-    elif list == 'transactions':
-        saveImage(capture_window(TARGET_WINDOW), f'{directory}/{buyAt}.png')
+    elif listType == 'transactions':
+        saveImage(capture_window(TARGET_WINDOW), f'results/{listType}/{buyAt}.png')
         waitingFor(MODAL_CLOSED_1600_1900, MODAL_CLOSE_POS)
 
 
-def sellAndCapture(quantity = 1, directory = 'results'):
+def sellAndCapture(quantity = 1, ):
     # Bấm giá min
     single_click(TARGET_WINDOW, MIN_PRICE_SELL_MODAL)
 
@@ -241,10 +241,10 @@ def sellAndCapture(quantity = 1, directory = 'results'):
 
 
     buyAt = datetime.now().strftime("%Hh%Mm%Ss-%Y-%m-%d")
-    saveImage(capture_window(TARGET_WINDOW), f'={directory}/sell_before_{buyAt}.png')
+    saveImage(capture_window(TARGET_WINDOW), f'=results/{listType}/sell_before_{buyAt}.png')
     waitingFor(MODAL_CLOSED_1600_1900, MODAL_CLOSE_POS)
     time.sleep(3)
-    saveImage(capture_window(TARGET_WINDOW), f'={directory}/sell_after_{buyAt}.png')
+    saveImage(capture_window(TARGET_WINDOW), f'=results/{listType}/sell_after_{buyAt}.png')
 
 
 # ---------------------------------------------------------------- TEST FUNCTIONS ----------------------------------------------------------------

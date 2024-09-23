@@ -17,7 +17,7 @@ def allInOnePlayer(resetTime = None, grade = None, priceType = PRICE_TYPES['0'],
         # RESET CHỈ DIỄN RA TRONG 10 GIÂY ĐẦU TIÊN CỦA PHÚT
         if not isInFirst10Seconds():
             continue
-        send_key(TARGET_WINDOW, KEY_CODES['ESC'])
+        # send_key(TARGET_WINDOW, KEY_CODES['ESC'])
 
         # DELAY SAU MỘT KHOẢNG THỜI GIAN
         # statCountDown = delayAfterDuration(statCountDown, intervalInMinutes=DELAY_INTERVAL_IN_MINUTE, durationInSeconds=DELAY_DURATION_IN_SECOND)
@@ -64,7 +64,7 @@ def allInOnePlayer(resetTime = None, grade = None, priceType = PRICE_TYPES['0'],
 
             # Giá đã thay đổi
             if isDiff:
-                buyAndCapture()
+                buyAndCapture(listType='favorites')
 
                 # Nếu có reset time => đánh dấu đã cập nhật trong lần này
                 if resetTime:
@@ -100,7 +100,7 @@ def buyMultiPlayers(players, autoDelay = False):
         # RESET CHỈ DIỄN RA TRONG 10 GIÂY ĐẦU TIÊN CỦA PHÚT
         if not isInFirst10Seconds():
             continue
-        send_key(TARGET_WINDOW, KEY_CODES['ESC'])
+        # send_key(TARGET_WINDOW, KEY_CODES['ESC'])
 
 
         # KIỂM TRA THẺ ĐANG ĐƯỢC ƯU TIÊN CHÈN => NẾU CHƯA TỒN TẠI THỲ BYPASS
@@ -151,7 +151,7 @@ def buyMultiPlayers(players, autoDelay = False):
 
             # Giá đã thay đổi
             if isDiff:
-                buyAndCapture(quantity=players[idx]['quantity'], directory='results/favorites')
+                buyAndCapture(quantity=players[idx]['quantity'], listType='favorites')
 
                 # Nếu có reset time => đánh dấu đã cập nhật trong lần này
                 if players[idx]['resetTime']:

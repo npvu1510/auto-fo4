@@ -39,7 +39,7 @@ RESET_TIME = {
     "Vieira": toResetTime("Chẵn 15-35"),
     "Xabi Alonso": toResetTime("Chẵn 29-49"),
     "Gerrard": toResetTime("Chẵn 24-45"),
-    "Torres": toResetTime("Chẵn 50 - Lẻ 20"),
+    "Torres": toResetTime("Chẵn 31-51"),
     "Gerrard ITM": toResetTime("Chẵn 00-25"),
     "Herrmann": toResetTime("Chẵn 00-25"),
     "Fekir": toResetTime("Chẵn 00-25"),
@@ -49,5 +49,7 @@ RESET_TIME = {
     "Abedi": toResetTime("Lẻ 16 - Lẻ 36"),
     "Xabi Alonso CU": toResetTime("chẳn 56 - lẻ 16"),
     "Antony": toResetTime("Chẵn 44 - Lẻ 04"),
+    "Kewell": toResetTime("Lẻ 55 - Chẵn 20"),
+    "Cristiano Ronaldo": toResetTime("Chẵn 55 - Lẻ 20"),
     
 }
