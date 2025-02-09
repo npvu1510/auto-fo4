@@ -63,7 +63,7 @@ SELL_PRICE_TYPES={'0': MAX_PRICE_IN_SELL_MODAL_POS,'100': TRAM_MAX_PRICE_IN_SELL
 # ----------------------------------------------------------------  THRESHOLDS  ----------------------------------------------------------------
 OPEN_MODAL_THRESHOLD = 0.87
 CLOSE_MODAL_THRESHOLD = 0.8
-COMPARE_PRICE_THRESHOLD = 0.9
+COMPARE_PRICE_THRESHOLD = 0.85
 
 
 # ----------------------------------------------------------------  TIMES  ----------------------------------------------------------------

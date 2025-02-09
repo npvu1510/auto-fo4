@@ -100,14 +100,13 @@ def buyMultiPlayers(players, autoDelay = False):
         # RESET CHỈ DIỄN RA TRONG 10 GIÂY ĐẦU TIÊN CỦA PHÚT
         if not isInFirst10Seconds():
             continue
-        # send_key(TARGET_WINDOW, KEY_CODES['ESC'])
-
 
         # KIỂM TRA THẺ ĐANG ĐƯỢC ƯU TIÊN CHÈN => NẾU CHƯA TỒN TẠI THỲ BYPASS
         if selected != -1 and idx != selected:
             idx = idx + 1 if idx < len(players) - 1 else 0
             continue
 
+        send_key(TARGET_WINDOW, KEY_CODES['ESC'])
         print(f"🔃 ĐANG CHÈN CẦU THỦ #{idx + 1}...")
         #  KIỂM TRA RESET TIME
         if players[idx]['resetTime']:
@@ -115,7 +114,7 @@ def buyMultiPlayers(players, autoDelay = False):
             # Ngoài giờ reset
             if isinstance(message, str):
                 print(f'⌚ {message}')
-                time.sleep(1)
+                time.sleep(3)
 
                 prevPrices[idx] = currentPrice = None
                 updateds[idx] = False

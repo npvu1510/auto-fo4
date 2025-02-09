@@ -58,4 +58,11 @@ RESET_TIME = {
     "Raul Albiol": toResetTime("Chẵn 00-25"),
     "Faes": toResetTime("Chẵn 00-25"),
     "Illarramendi": toResetTime("Chẵn 34-59"),
+    "Navas": toResetTime("Chẵn 30-59"),
+    "Fornals": toResetTime("Chẵn 30-59"),
+    "Blind": toResetTime("Chẵn 10-30"),
+    "Carrasco": toResetTime("Chẵn 40 - Lẻ 01"),
+    "Vitinha": toResetTime("Chẵn 55 - Lẻ 23"),
+    "Ginola": toResetTime("Lẻ 16 - Lẻ 43"),
+    "Diaby": toResetTime("Chẵn 40 - Lẻ 01"),
 }
